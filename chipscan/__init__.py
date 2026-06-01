@@ -1,0 +1,1 @@
+# ChipScan Django project package

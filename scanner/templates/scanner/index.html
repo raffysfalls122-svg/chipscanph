@@ -1,0 +1,3627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0a0a12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>ChipScan PH</title>
+<!-- Google Fonts: Inter for elegant typography -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- Tesseract.js for client-side OCR character recognition -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+:root{
+  --bg:#0a0a12;--s1:#111119;--s2:#18181f;--s3:#202028;--s4:#28283a;
+  --bd:rgba(255,255,255,.08);--bd2:rgba(255,255,255,.15);
+  --tx:#f0f0fa;--t2:#8888a8;--t3:#505068;
+  --g5:#00ffb3;--g5b:rgba(0,255,179,.1);--g5d:rgba(0,255,179,.3);
+  --g4:#38b2ff;--g4b:rgba(56,178,255,.1);--g4d:rgba(56,178,255,.3);
+  --g3:#a78bfa;--g3b:rgba(167,139,250,.1);--g3d:rgba(167,139,250,.3);
+  --g2:#fbbf24;--g2b:rgba(251,191,36,.1);--g2d:rgba(251,191,36,.3);
+  --g1:#f87171;--g1b:rgba(248,113,113,.1);--g1d:rgba(248,113,113,.3);
+  --er:#ff4444;--ad:#ff6bbd;--adb:rgba(255,107,189,.1);
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--tx)}
+body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative;border-left:1px solid var(--bd);border-right:1px solid var(--bd);box-shadow:0 0 100px rgba(0,0,0,0.8)}
+ 
+/* ── LOGIN ── */
+#LS{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 24px}
+#LS.h{display:none}
+.login-logo{font-size:36px;font-weight:900;letter-spacing:-2px;margin-bottom:4px;text-align:center}
+.login-logo em{color:var(--g5);font-style:normal}
+.login-sub{font-size:11px;color:var(--t3);letter-spacing:1.5px;margin-bottom:40px;font-family:monospace;text-align:center}
+.login-card{background:var(--s1);border:1px solid var(--bd2);border-radius:24px;padding:28px 22px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:14px}
+.login-title{font-size:18px;font-weight:800;margin-bottom:2px}
+.login-hint{font-size:11px;color:var(--t2);font-family:monospace}
+.lf{display:flex;flex-direction:column;gap:5px}
+.lf-label{font-size:10px;color:var(--t3);font-family:monospace;letter-spacing:1px}
+.lf-input{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;font-family:monospace;font-size:14px;color:var(--tx);outline:none;width:100%;-webkit-appearance:none;appearance:none;transition:border .2s}
+.lf-input:focus{border-color:var(--g5);background:var(--s3)}
+.lf-input::placeholder{color:var(--t3)}
+.login-err{color:var(--er);font-size:12px;font-family:monospace;display:none;text-align:center;padding:4px}
+.login-err.s{display:block}
+.login-btn{background:var(--g5);color:#000;border:none;border-radius:12px;padding:15px;font-weight:900;font-size:15px;cursor:pointer;width:100%;letter-spacing:.3px;transition:opacity .15s}
+.login-btn:active{opacity:.8}
+.login-footer{text-align:center;font-size:10px;color:var(--t3);font-family:monospace;line-height:1.8}
+ 
+/* ── HEADER ── */
+.hdr{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);flex-shrink:0;background:var(--bg);position:sticky;top:0;z-index:50}
+.hn{font-size:20px;font-weight:900;letter-spacing:-1px}
+.hn em{color:var(--g5);font-style:normal}
+.hr{display:flex;align-items:center;gap:6px}
+.uc{background:var(--s2);border:1px solid var(--bd2);border-radius:20px;padding:5px 11px;font-family:monospace;font-size:10px;color:var(--t2);display:flex;align-items:center;gap:5px}
+.uc.adm{border-color:rgba(255,107,189,.4);color:var(--ad)}
+.pd{width:6px;height:6px;border-radius:50%;background:var(--g5);animation:bk 2s infinite;flex-shrink:0}
+.pd.ap{background:var(--ad)}
+@keyframes bk{0%,100%{opacity:1}50%{opacity:.2}}
+.lob{background:transparent;border:1px solid var(--bd);border-radius:12px;padding:5px 10px;font-size:10px;color:var(--t3);cursor:pointer;font-family:monospace}
+ 
+/* ── NAV ── */
+.nav{display:flex;padding:8px 12px 0;gap:4px;flex-shrink:0;overflow-x:auto;background:var(--bg)}
+.nav::-webkit-scrollbar{display:none}
+.nb{flex:1;min-width:46px;padding:7px 3px;border-radius:10px;border:1px solid var(--bd);background:transparent;color:var(--t3);font-size:9px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;letter-spacing:.3px;transition:all .2s;white-space:nowrap}
+.nb.a{background:var(--s3);border-color:var(--bd2);color:var(--tx)}
+.nb.at.a{background:var(--adb);border-color:rgba(255,107,189,.4);color:var(--ad)}
+.ni{font-size:14px}
+ 
+/* ── SCROLL ── */
+.sc{flex:1;overflow-y:auto;overflow-x:hidden;padding:12px 14px 24px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
+.sc::-webkit-scrollbar{display:none}
+.pg{display:none;flex-direction:column;gap:10px;animation:su .22s ease}
+.pg.a{display:flex}
+@keyframes su{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+ 
+/* ── SCANNER UI (full camera experience) ── */
+.scanner-wrap{position:relative;border-radius:20px;overflow:hidden;background:#000;aspect-ratio:4/3;flex-shrink:0;border:1px solid var(--bd)}
+#scanVideo{width:100%;height:100%;object-fit:cover;display:block}
+.scan-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+/* corner decoration only — does NOT restrict scan area */
+.scan-frame{position:relative;width:80%;aspect-ratio:4/3}
+.scan-frame::before,.scan-frame::after{content:'';position:absolute;width:22px;height:22px;border-color:var(--g5);border-style:solid}
+.scan-frame::before{top:0;left:0;border-width:3px 0 0 3px;border-radius:4px 0 0 0}
+.scan-frame::after{bottom:0;right:0;border-width:0 3px 3px 0;border-radius:0 0 4px 0}
+.scan-frame-inner::before,.scan-frame-inner::after{content:'';position:absolute;width:22px;height:22px;border-color:var(--g5);border-style:solid}
+.scan-frame-inner::before{top:0;right:0;border-width:3px 3px 0 0;border-radius:0 4px 0 0}
+.scan-frame-inner::after{bottom:0;left:0;border-width:0 0 3px 3px;border-radius:0 0 0 4px}
+/* scan line */
+.scan-line{position:absolute;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,var(--g5),transparent);border-radius:2px;box-shadow:0 0 8px var(--g5);animation:scanAnim 2s ease-in-out infinite;display:none}
+.scan-line.active{display:block}
+@keyframes scanAnim{0%{top:10%}100%{top:90%}}
+.scan-label{position:absolute;bottom:16px;left:0;right:0;text-align:center;font-size:11px;font-family:monospace;color:rgba(255,255,255,.7);letter-spacing:.5px}
+.scan-status{position:absolute;top:12px;left:0;right:0;text-align:center}
+.scan-status-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:5px 12px;font-size:11px;font-family:monospace;color:#fff;backdrop-filter:blur(4px)}
+.scan-dot{width:7px;height:7px;border-radius:50%;background:var(--er);flex-shrink:0}
+.scan-dot.live{background:var(--g5);animation:bk .8s infinite}
+/* camera controls bar */
+.cam-controls{display:flex;border-top:1px solid var(--bd);background:var(--s1)}
+.cam-btn{flex:1;padding:13px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--t2);background:transparent;border:none;cursor:pointer;transition:background .15s;letter-spacing:.3px}
+.cam-btn:not(:last-child){border-right:1px solid var(--bd)}
+.cam-btn:active{background:var(--s3)}
+.cam-btn-ico{font-size:18px}
+.cam-btn.scanning{color:var(--g5)}
+#fileInput,#galleryInput{display:none}
+ 
+/* scanning spinner overlay */
+.ai-overlay{position:absolute;inset:0;background:rgba(0,0,0,.75);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;backdrop-filter:blur(3px);z-index:10}
+.ai-overlay.s{display:flex}
+.ai-spinner{width:48px;height:48px;border:3px solid rgba(0,255,179,.2);border-top-color:var(--g5);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ai-msg{font-size:12px;font-family:monospace;color:var(--g5);text-align:center;letter-spacing:.3px;padding:0 20px}
+ 
+/* ── INPUT ROW ── */
+.input-row{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:4px;display:flex;gap:4px}
+.chip-in{flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:12px 13px;font-family:monospace;font-size:13px;color:var(--tx);outline:none;-webkit-appearance:none;appearance:none;transition:border .2s;letter-spacing:.3px}
+.chip-in:focus{border-color:var(--g5);background:var(--s3)}
+.chip-in::placeholder{color:var(--t3);font-size:11px}
+.chk-btn{background:var(--g5);color:#000;border:none;border-radius:11px;padding:12px 18px;font-weight:900;font-size:13px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:opacity .15s}
+.chk-btn:active{opacity:.8}
+ 
+/* ── SUGGESTIONS ── */
+.sug-box{background:var(--s2);border:1px solid var(--bd2);border-radius:11px;overflow:hidden;display:none;max-height:160px;overflow-y:auto}
+.sug-box.s{display:block}
+.sug-item{padding:10px 13px;font-family:monospace;font-size:11px;color:var(--t2);cursor:pointer;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.sug-item:last-child{border:none}
+.sug-item:active{background:var(--s3)}
+.sug-hi{color:var(--g5)}
+.sug-tag{font-size:9px;padding:2px 7px;border-radius:4px}
+ 
+/* ── TIP ── */
+.tip{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;display:flex;gap:9px}
+.tip-ico{font-size:14px;flex-shrink:0}
+.tip-tx{font-size:11px;color:var(--t2);line-height:1.6;font-family:monospace}
+.tip-tx b{color:var(--g5)}
+ 
+/* ── RESULT CARD ── */
+.result{background:var(--s1);border:1px solid var(--bd);border-radius:16px;overflow:hidden;display:none}
+.result.s{display:block;animation:su .28s ease}
+.res-top{padding:15px 15px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd)}
+.res-code-lbl{font-size:10px;color:var(--t3);font-family:monospace;letter-spacing:1px;margin-bottom:3px}
+.res-code-val{font-family:monospace;font-size:13px;font-weight:700;letter-spacing:.3px}
+.grade-pill{display:flex;flex-direction:column;align-items:center;gap:2px}
+.grade-big{font-size:26px;font-weight:900;letter-spacing:-1px;font-family:monospace}
+.grade-tier{font-size:10px;font-family:monospace;opacity:.65;letter-spacing:.5px}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);border-top:1px solid var(--bd)}
+.res-cell{background:var(--s1);padding:11px 13px}
+.res-lbl{font-size:9px;color:var(--t3);font-family:monospace;letter-spacing:1px;margin-bottom:4px}
+.res-val{font-size:13px;font-weight:600}
+.price-row{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);border-top:1px solid var(--bd)}
+.price-cell{background:var(--s2);padding:13px 14px}
+.price-lbl{font-size:9px;color:var(--t3);font-family:monospace;letter-spacing:1px;margin-bottom:3px}
+.price-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:4px;font-size:9px;font-family:monospace;font-weight:700;margin-bottom:5px}
+.cb2{background:var(--g5b);border:1px solid var(--g5d);color:var(--g5)}
+.nb2{background:var(--g2b);border:1px solid var(--g2d);color:var(--g2)}
+.price-val{font-size:22px;font-weight:900;font-family:monospace}
+.res-actions{display:flex;gap:1px;background:var(--bd);border-top:1px solid var(--bd)}
+.res-btn{flex:1;padding:12px;background:var(--s1);border:none;color:var(--t2);font-size:11px;font-weight:600;cursor:pointer;transition:background .15s}
+.res-btn:active{background:var(--s2)}
+ 
+/* ── ERROR ── */
+.err-card{background:rgba(255,68,68,.05);border:1px solid rgba(255,68,68,.25);border-radius:16px;padding:14px;display:none;flex-direction:column;gap:9px}
+.err-card.s{display:flex;animation:su .2s ease}
+.err-title{font-size:13px;font-weight:700;color:var(--er)}
+.err-body{font-size:11px;color:var(--t2);line-height:1.8;font-family:monospace}
+.err-body b{color:var(--er)}
+.err-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.err-tag{background:var(--g5b);border:1px solid var(--g5d);color:var(--g5);font-family:monospace;font-size:10px;padding:2px 7px;border-radius:4px}
+ 
+/* ── GRADES & CAPACITY ACCORDIONS ── */
+.grade-card{border-radius:14px;overflow:hidden;border:1px solid var(--bd)}
+.gri{display:flex;align-items:center;gap:11px;padding:12px 13px;background:var(--s1);border-bottom:1px solid var(--bd)}
+.gri:last-child{border:none}
+.grl{display:flex;flex-direction:column;align-items:center;gap:2px;width:52px;flex-shrink:0}
+.grg{font-size:13px;font-weight:900;font-family:monospace}
+.grtb{font-size:9px;font-family:monospace;padding:1px 6px;border-radius:3px}
+.grc2{flex:1}
+.grt{font-size:12px;font-weight:600;margin-bottom:2px}
+.grd{font-size:10px;color:var(--t2);font-family:monospace}
+.grp{font-size:9px;color:var(--t3);margin-top:2px;font-family:monospace}
+.warn-card{background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.2);border-radius:12px;padding:12px 13px}
+.warn-title{font-size:11px;font-weight:700;color:#ff6b35;margin-bottom:7px}
+.pfx-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:12px 13px}
+.pfx-title{font-size:10px;font-weight:700;color:var(--t2);letter-spacing:.5px;margin-bottom:7px;font-family:monospace}
+.pfx-tags{display:flex;flex-wrap:wrap;gap:4px}
+.pfx-tag{background:var(--s3);border:1px solid var(--bd2);border-radius:6px;padding:3px 8px;font-family:monospace;font-size:10px}
+
+/* ACCORDIONS STYLE */
+.acc-btn{width:100%;background:var(--s2);border:1px solid var(--bd);padding:12px 16px;color:var(--tx);font-weight:700;font-size:13px;text-align:left;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border-radius:10px;transition:background .2s}
+.acc-btn:active{background:var(--s3)}
+.acc-btn::after{content:'▼';font-size:10px;color:var(--t2);transition:transform .2s}
+.acc-btn.a::after{transform:rotate(180deg)}
+.acc-pan{max-height:0;overflow:hidden;transition:max-height 0.25s ease-out;display:flex;flex-direction:column;gap:5px}
+.acc-pan.a{max-height:2000px}
+ 
+/* ── PRICES ── */
+.ptabs{display:flex;gap:5px;background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:3px}
+.ptab{flex:1;padding:8px;border-radius:7px;border:none;background:transparent;font-size:12px;font-weight:700;color:var(--t3);cursor:pointer;transition:all .2s;text-align:center}
+.ptab.a{background:var(--s4);color:var(--tx);border:1px solid var(--bd2)}
+.psec{display:none;flex-direction:column;gap:8px}
+.psec.a{display:flex;animation:su .2s ease}
+.pmb{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:7px;font-size:10px;font-family:monospace;font-weight:700}
+.price-rows{display:flex;flex-direction:column;gap:7px}
+.per{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:12px 13px;display:flex;align-items:center;gap:9px}
+.peg{width:54px;flex-shrink:0}
+.pegt{font-size:13px;font-weight:900;font-family:monospace}
+.peti{font-size:9px;font-family:monospace;margin-top:1px;opacity:.7}
+.pety{font-size:10px;color:var(--t2);flex:1;font-family:monospace}
+.piw{display:flex;align-items:center;gap:3px;background:var(--s3);border:1px solid var(--bd2);border-radius:8px;padding:0 9px;flex-shrink:0}
+.pip{font-family:monospace;font-size:11px;color:var(--t2)}
+.pii{background:transparent;border:none;outline:none;font-family:monospace;font-size:14px;font-weight:700;color:var(--tx);width:65px;text-align:right;padding:8px 0;-webkit-appearance:none;appearance:none}
+.svt{text-align:center;font-size:11px;color:var(--g5);font-family:monospace;display:none;padding:3px}
+ 
+/* ── REFERENCE DATABASE BROWSER ── */
+.ref-search-bar{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.ref-search-input{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:10px 13px;font-family:monospace;font-size:12px;color:var(--tx);outline:none;width:100%;transition:border .2s}
+.ref-search-input:focus{border-color:var(--g5)}
+.ref-search-input::placeholder{color:var(--t3)}
+.ref-filters{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px}
+.ref-filters::-webkit-scrollbar{display:none}
+.ref-filter-btn{background:var(--s3);border:1px solid var(--bd);border-radius:8px;padding:5px 10px;font-size:10px;font-family:monospace;color:var(--t2);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.ref-filter-btn.a{background:var(--g5b);border-color:var(--g5d);color:var(--g5)}
+.ref-db-list{display:flex;flex-direction:column;gap:6px}
+.ref-db-item{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:9px;cursor:pointer;transition:border .15s}
+.ref-db-item:active{border-color:var(--g5)}
+.ref-db-code{font-family:monospace;font-size:11px;font-weight:700;flex:1;min-width:0}
+.ref-db-code-txt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ref-db-meta{font-size:9px;color:var(--t2);font-family:monospace;margin-top:2px}
+.ref-db-badges{display:flex;gap:4px;margin-top:3px;flex-wrap:wrap}
+.ref-db-badge{font-size:8px;font-family:monospace;font-weight:700;padding:1px 5px;border-radius:3px}
+.ref-db-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.ref-db-grade{font-size:10px;font-weight:900;font-family:monospace;padding:2px 7px;border-radius:5px}
+.ref-db-price{font-size:11px;font-weight:700;font-family:monospace;color:var(--g5)}
+.ref-db-count{font-size:10px;color:var(--g5);font-family:monospace;font-weight:700}
+/* ── REFERENCE OCR UPLOAD (inside ADD tab) ── */
+.ref-zone{background:var(--s2);border:2px dashed var(--bd2);border-radius:14px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;padding:10px}
+.ref-zone:active{border-color:var(--g5)}
+#rp{width:100%;max-height:200px;object-fit:contain;display:none;border-radius:12px}
+.ref-ico{font-size:28px}
+.ref-lbl{font-size:11px;color:var(--t2);font-family:monospace;text-align:center}
+.ref-results{background:var(--s1);border:1px solid var(--bd);border-radius:14px;overflow:hidden;display:none}
+.ref-results.s{display:block}
+.ref-rh{padding:11px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.ref-rt{font-size:13px;font-weight:700}
+.ref-rc{font-size:11px;color:var(--g5);font-family:monospace}
+.ref-item{display:flex;align-items:center;gap:9px;padding:9px 13px;border-bottom:1px solid var(--bd)}
+.ref-item:last-child{border:none}
+.ref-ic{font-family:monospace;font-size:11px;font-weight:700;flex:1}
+.ref-ig{font-size:9px;font-weight:800;padding:2px 7px;border-radius:4px;font-family:monospace}
+.ref-ii{font-size:9px;color:var(--t2);font-family:monospace;margin-top:1px}
+.ref-add-btn{margin:10px;display:block;background:var(--g5);color:#000;border:none;border-radius:9px;padding:10px;font-weight:800;font-size:13px;cursor:pointer;width:calc(100% - 20px)}
+ 
+/* ── MANUAL ADD ── */
+.mf{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.mg{display:flex;flex-direction:column;gap:4px}
+.ml{font-size:10px;color:var(--t3);font-family:monospace;letter-spacing:.8px}
+.mi{background:var(--s2);border:1px solid var(--bd);border-radius:9px;padding:10px 12px;font-family:monospace;font-size:12px;color:var(--tx);outline:none;-webkit-appearance:none;appearance:none;width:100%;transition:border .2s}
+.mi:focus{border-color:var(--g5)}
+.ms{background:var(--s2);border:1px solid var(--bd);border-radius:9px;padding:10px 12px;font-family:monospace;font-size:12px;color:var(--tx);outline:none;width:100%;-webkit-appearance:none;appearance:none}
+.ms option{background:#1e1e28}
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.manual-list{display:flex;flex-direction:column;gap:6px}
+.mitem{background:var(--s1);border:1px solid var(--bd);border-radius:11px;padding:10px 13px;display:flex;align-items:center;gap:9px}
+.mitem-code{font-family:monospace;font-size:11px;font-weight:700;flex:1}
+.mitem-gr{font-size:9px;font-weight:800;padding:2px 7px;border-radius:4px;font-family:monospace}
+.mitem-info{font-size:9px;color:var(--t2);font-family:monospace;margin-top:2px}
+.mitem-del{background:transparent;border:none;color:var(--er);font-size:15px;cursor:pointer;padding:3px}
+ 
+/* ── HISTORY ── */
+.hist-list{display:flex;flex-direction:column;gap:7px}
+.hist-item{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:9px;cursor:pointer}
+.hist-item:active{background:var(--s2)}
+.hist-gr{font-size:10px;font-weight:900;font-family:monospace;padding:2px 8px;border-radius:6px;flex-shrink:0}
+.hist-main{flex:1;min-width:0}
+.hist-code{font-family:monospace;font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-meta{font-size:9px;color:var(--t2);margin-top:1px;font-family:monospace}
+.hist-right{text-align:right;flex-shrink:0}
+.hist-price{font-family:monospace;font-size:12px;font-weight:700}
+.hist-time{font-size:9px;color:var(--t3);font-family:monospace;margin-top:2px}
+.empty-state{text-align:center;padding:36px 16px;color:var(--t3)}
+.empty-ico{font-size:32px;margin-bottom:8px}
+.empty-txt{font-size:11px;font-family:monospace}
+ 
+/* ── ADMIN ── */
+.admin-banner{background:var(--adb);border:1px solid rgba(255,107,189,.3);border-radius:14px;padding:13px 14px;display:flex;align-items:center;gap:11px}
+.admin-sec{background:var(--s1);border:1px solid var(--bd);border-radius:14px;overflow:hidden}
+.admin-sec-hdr{padding:11px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.admin-sec-t{font-size:13px;font-weight:700}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd)}
+.stat-cell{background:var(--s1);padding:13px 14px}
+.stat-num{font-size:24px;font-weight:900;font-family:monospace}
+.stat-lbl{font-size:9px;color:var(--t3);font-family:monospace;letter-spacing:.8px;margin-top:2px}
+.user-item{display:flex;align-items:center;gap:9px;padding:10px 13px;border-bottom:1px solid var(--bd)}
+.user-item:last-child{border:none}
+.user-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+.user-main{flex:1}
+.user-name{font-size:12px;font-weight:600}
+.user-meta{font-size:9px;color:var(--t2);font-family:monospace;margin-top:1px}
+.user-role{font-size:9px;padding:2px 7px;border-radius:4px;font-family:monospace;font-weight:700}
+.role-admin{background:var(--adb);color:var(--ad);border:1px solid rgba(255,107,189,.3)}
+.role-tech{background:var(--g5b);color:var(--g5);border:1px solid var(--g5d)}
+.user-del{background:transparent;border:none;color:var(--er);font-size:14px;cursor:pointer;padding:3px}
+.add-user-form{padding:12px;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--bd)}
+.auf2{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.afi{background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:9px 11px;font-family:monospace;font-size:11px;color:var(--tx);outline:none;width:100%;-webkit-appearance:none;appearance:none;transition:border .2s}
+.afi:focus{border-color:var(--g5)}
+.afs{background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:9px 11px;font-family:monospace;font-size:11px;color:var(--tx);outline:none;width:100%;-webkit-appearance:none;appearance:none}
+.afa{background:var(--g5);color:#000;border:none;border-radius:8px;padding:9px;font-weight:700;font-size:12px;cursor:pointer;width:100%}
+.ah-item{display:flex;align-items:center;gap:7px;padding:9px 13px;border-bottom:1px solid var(--bd)}
+.ah-item:last-child{border:none}
+.ah-gr{font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;font-family:monospace;flex-shrink:0}
+.ah-main{flex:1;min-width:0}
+.ah-code{font-family:monospace;font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ah-user{font-size:9px;color:var(--t2);font-family:monospace}
+.ah-price{font-family:monospace;font-size:11px;font-weight:700;flex-shrink:0}
+ 
+/* ── COMMON ── */
+.stl{font-size:10px;color:var(--t3);font-family:monospace;letter-spacing:1.5px}
+.abtn{border:none;border-radius:10px;padding:12px;font-weight:700;font-size:13px;cursor:pointer;width:100%;transition:opacity .15s;letter-spacing:.3px}
+.abtn:active{opacity:.7}
+.gn{background:var(--g5);color:#000}
+.go{background:transparent;border:1px solid var(--bd2);color:var(--t2)}
+.gr2{background:var(--g1b);border:1px solid var(--g1d);color:var(--g1)}
+ 
+/* GRADE COLORS */
+.c5{color:var(--g5)}.bg5{background:var(--g5b);border-color:var(--g5d)}
+.c4{color:var(--g4)}.bg4{background:var(--g4b);border-color:var(--g4d)}
+.c3{color:var(--g3)}.bg3{background:var(--g3b);border-color:var(--g3d)}
+.c2{color:var(--g2)}.bg2{background:var(--g2b);border-color:var(--g2d)}
+.c1{color:var(--g1)}.bg1{background:var(--g1b);border-color:var(--g1d)}
+
+/* TOAST UTILITY */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--s3);border:1px solid var(--g5);border-radius:20px;padding:8px 16px;font-size:12px;font-family:monospace;color:var(--g5);box-shadow:0 10px 30px rgba(0,0,0,0.5);display:none;z-index:1000}
+.toast.err{border-color:var(--er);color:var(--er)}
+
+/* ACCORDION ACCENT TAGS */
+.acc-tag{background:var(--s3);border:1px solid var(--bd2);border-radius:6px;padding:2px 7px;font-family:monospace;font-size:9px;color:var(--t2);margin-left:auto;margin-right:12px}
+
+/* DYNAMIC FAMILIES ROW */
+.family-wrap{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px;margin-top:4px}
+.family-wrap::-webkit-scrollbar{display:none}
+.family-item{background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:6px 10px;font-size:10px;font-family:monospace;color:var(--t2);cursor:pointer;white-space:nowrap;transition:border .15s}
+.family-item:hover{border-color:var(--g4)}
+
+/* CHIPSET SCANNER — guide overlays removed, full-frame scanning enabled */
+
+/* PREMIUM CROP & ROTATION ADJUSTER MODAL */
+.crop-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(10, 10, 18, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 16px;
+}
+.crop-modal.s {
+  opacity: 1;
+  pointer-events: auto;
+}
+.crop-container {
+  width: 100%;
+  max-width: 380px;
+  background: var(--s1);
+  border: 1px solid var(--bd2);
+  border-radius: 24px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  transform: scale(0.92);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.crop-modal.s .crop-container {
+  transform: scale(1);
+}
+.crop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.crop-title {
+  font-size: 15px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--tx);
+  letter-spacing: -0.3px;
+}
+.crop-title em {
+  color: var(--g5);
+  font-style: normal;
+}
+.crop-close {
+  background: var(--s2);
+  border: 1px solid var(--bd);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--t2);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+.crop-close:hover {
+  background: var(--s3);
+  color: var(--tx);
+}
+.crop-preview-wrap {
+  width: 100%;
+  aspect-ratio: 1/1;
+  position: relative;
+  background: #06060c;
+  border-radius: 16px;
+  border: 1px solid var(--bd);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+}
+#cropCanvas {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+/* Draggable Crop Rectangle Overlay */
+.crop-box-overlay {
+  position: absolute;
+  border: 2px dashed var(--g5);
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.65);
+  cursor: move;
+  touch-action: none;
+}
+/* Corner resize handlers */
+.crop-handle {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: var(--g5);
+  border: 2px solid #000;
+  border-radius: 50%;
+}
+.crop-handle-tl { top: -8px; left: -8px; cursor: nwse-resize; }
+.crop-handle-tr { top: -8px; right: -8px; cursor: nesw-resize; }
+.crop-handle-bl { bottom: -8px; left: -8px; cursor: nesw-resize; }
+.crop-handle-br { bottom: -8px; right: -8px; cursor: nwse-resize; }
+
+.crop-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.crop-btn-row {
+  display: flex;
+  gap: 8px;
+}
+.crop-action-btn {
+  flex: 1;
+  background: var(--s2);
+  border: 1px solid var(--bd);
+  color: var(--tx);
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s;
+  font-family: monospace;
+}
+.crop-action-btn:hover {
+  border-color: var(--bd2);
+  background: var(--s3);
+}
+.crop-action-btn:active {
+  transform: scale(0.97);
+}
+.crop-slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--s2);
+  border: 1px solid var(--bd);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+.crop-slider-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--t2);
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+.crop-slider-header span em {
+  color: var(--g5);
+  font-style: normal;
+}
+.crop-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--s3);
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  border: 1px solid var(--bd);
+  margin: 4px 0;
+}
+.crop-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--g5);
+  cursor: pointer;
+  box-shadow: 0 0 6px var(--g5d);
+  border: 1px solid #000;
+}
+.crop-scan-btn {
+  background: var(--g5);
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-weight: 900;
+  font-size: 14px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.15s;
+  width: 100%;
+}
+.crop-scan-btn:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 15px var(--g5d);
+}
+.crop-scan-btn:active {
+  transform: scale(0.98);
+}
+.crop-scan-failed-pill {
+  background: var(--g1b);
+  border: 1px solid var(--g1d);
+  color: var(--g1);
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 10px;
+  font-family: monospace;
+  text-align: center;
+  margin-top: 5px;
+  cursor: pointer;
+  animation: su 0.2s ease;
+}
+</style>
+</head>
+<body>
+ 
+<!-- ══ LOGIN ══ -->
+<div id="LS">
+  <div class="login-logo">Chip<em>Scan</em> PH</div>
+  <div class="login-sub">TECHNICIAN MANAGEMENT SYSTEM</div>
+  <div class="login-card">
+    <div>
+      <div class="login-title">Sign In</div>
+      <div class="login-hint">Enter your username and password</div>
+    </div>
+    <div class="lf">
+      <div class="lf-label">USERNAME</div>
+      <input class="lf-input" id="lU" placeholder="e.g. admin or tech1" autocapitalize="none" autocomplete="off" onkeydown="if(event.key==='Enter')document.getElementById('lP').focus()">
+    </div>
+    <div class="lf">
+      <div class="lf-label">PASSWORD</div>
+      <input class="lf-input" id="lP" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-err" id="lE">❌ Invalid username or password</div>
+    <button class="login-btn" onclick="doLogin()">Sign In →</button>
+    <div class="login-footer">
+      Default admin: <b>admin</b> / <b>admin123</b><br>
+      Default tech: <b>tech1</b> / <b>tech123</b>
+    </div>
+  </div>
+</div>
+ 
+<!-- ══ APP ══ -->
+<div class="hdr">
+  <div class="hn">Chip<em>Scan</em> PH</div>
+  <div class="hr">
+    <div class="uc" id="UC"><div class="pd" id="UDP"></div><span id="UL">—</span></div>
+    <button class="lob" onclick="doLogout()">↩ Out</button>
+  </div>
+</div>
+ 
+<div class="nav">
+  <button class="nb a" onclick="goTab('scan')" id="nb-scan"><span class="ni">📷</span>SCAN</button>
+  <button class="nb" onclick="goTab('grades')" id="nb-grades"><span class="ni">📊</span>GRADES</button>
+  <button class="nb" onclick="goTab('prices')" id="nb-prices"><span class="ni">💰</span>PRICES</button>
+  <button class="nb" onclick="goTab('ref')" id="nb-ref"><span class="ni">📸</span>REF</button>
+  <button class="nb" onclick="goTab('manual')" id="nb-manual"><span class="ni">✏️</span>ADD</button>
+  <button class="nb" onclick="goTab('history')" id="nb-history"><span class="ni">🕘</span>HISTORY</button>
+  <button class="nb at" onclick="goTab('admin')" id="nb-admin" style="display:none"><span class="ni">🔐</span>ADMIN</button>
+</div>
+ 
+<div class="sc">
+ 
+  <!-- ══ SCAN PAGE ══ -->
+  <div class="pg a" id="pg-scan">
+   
+    <!-- SCANNER VIEWFINDER -->
+    <div class="scanner-wrap" id="scannerWrap">
+      <video id="scanVideo" autoplay playsinline muted></video>
+      <!-- AI overlay while processing -->
+      <div class="ai-overlay" id="aiOverlay">
+        <div class="ai-spinner"></div>
+        <div class="ai-msg" id="aiMsg">Reading chip code…</div>
+      </div>
+      <!-- Scan overlay UI -->
+      <div class="scan-overlay">
+        <div class="scan-status">
+          <div class="scan-status-pill"><div class="scan-dot" id="scanDot"></div><span id="scanStatusTxt">Camera Off</span></div>
+        </div>
+        <div class="scan-frame">
+          <div class="scan-frame-inner"></div>
+        </div>
+        <div class="scan-line" id="scanLine"></div>
+        <div class="scan-label" id="scanLabel">Tap START to open camera</div>
+      </div>
+    </div>
+   
+    <!-- Camera Controls -->
+    <div class="cam-controls">
+      <button class="cam-btn" id="btnStart" onclick="startCamera()">
+        <span class="cam-btn-ico">📷</span>START
+      </button>
+      <button class="cam-btn" id="btnCapture" style="color:var(--t3)" disabled>
+        <span class="cam-btn-ico">🤖</span>AUTO-ON
+      </button>
+      <button class="cam-btn" onclick="document.getElementById('fileInput').click()">
+        <span class="cam-btn-ico">🖼️</span>GALLERY
+      </button>
+      <button class="cam-btn" onclick="stopCamera()" style="color:var(--t3)">
+        <span class="cam-btn-ico">✕</span>STOP
+      </button>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" onchange="handleGallery(this)">
+    <canvas id="captureCanvas" style="display:none"></canvas>
+   
+    <!-- Input row -->
+    <div class="input-row">
+      <input class="chip-in" id="CI" placeholder="Or type chip code (e.g. KMRX1000BM)" maxlength="32"
+        oninput="onChipInput(this)" onkeydown="if(event.key==='Enter')checkChip()">
+      <button class="chk-btn" onclick="checkChip()">CHECK</button>
+    </div>
+
+    <!-- Suggestion list dropdown -->
+    <div class="sug-box" id="SGB"></div>
+
+    <!-- OCR manual correction helper input -->
+    <div class="input-row" id="ocrCorrectionRow" style="display:none; background:var(--s2); border-color:var(--g3b)">
+      <div style="font-size:9px; color:var(--g3); font-family:monospace; padding:10px 0 0 13px">✏️ EDIT MISREAD:</div>
+      <input class="chip-in" id="CI_correct" placeholder="Correct misread characters here" style="border:none" oninput="onCorrectionInput(this)">
+    </div>
+   
+    <!-- Tip -->
+    <div class="tip">
+      <div class="tip-ico">💡</div>
+      <div class="tip-tx">System features <b>Auto-Capture</b>! Simply aim camera at chipset markings, focus, and the system locks the code automatically. The entire camera view is scanned — no alignment needed!</div>
+    </div>
+
+    <!-- Smart Warnings (For RAM/CPU) -->
+    <div class="err-card" id="errCard">
+      <div class="err-title" id="errTitle">❌ RAM Code Detected</div>
+      <div class="err-body" id="errBody">You have entered a RAM code. Storage checks do not accept LPDDR. Please search for the medium-sized square storage chip instead.</div>
+      <div class="err-tags" id="errTags">
+        <span class="err-tag">Skip RAM</span>
+      </div>
+    </div>
+   
+    <!-- Result Card -->
+    <div class="result" id="RC">
+      <div class="res-top">
+        <div>
+          <div class="res-code-lbl" style="display:flex; align-items:center; gap:6px">
+            CHIP CODE
+            <span id="resStatusBadge" style="font-size:8px; padding:1px 5px; border-radius:3px; font-weight:700">Coded</span>
+          </div>
+          <div class="res-code-val" id="RCO">—</div>
+        </div>
+        <div class="grade-pill">
+          <div class="grade-big" id="RGB">—</div>
+          <div class="grade-tier" id="RGT">—</div>
+        </div>
+      </div>
+      <div class="res-grid">
+        <div class="res-cell"><div class="res-lbl">TYPE</div><div class="res-val" id="RTP">—</div></div>
+        <div class="res-cell"><div class="res-lbl">STORAGE</div><div class="res-val" id="RST">—</div></div>
+        <div class="res-cell"><div class="res-lbl">MAKER</div><div class="res-val" id="RMK">—</div></div>
+        <div class="res-cell">
+          <div class="res-lbl">SCAN CONFIDENCE</div>
+          <div class="res-val" id="resConfidence" style="color:var(--g5)">96%</div>
+        </div>
+      </div>
+      
+      <!-- Alternate Codes & Aliases -->
+      <div class="res-cell" id="resAliasRow" style="background:var(--s1); border-top:1px solid var(--bd); padding:11px 13px; display:none">
+        <div class="res-lbl" style="color:var(--g3)">KNOWN ALIASES / ALT CODES</div>
+        <div class="res-val" id="resAliasVal" style="font-size:12px; margin-top:2px; font-family:monospace">—</div>
+      </div>
+
+      <!-- Chip Note Row -->
+      <div class="res-cell" id="resNoteRow" style="background:var(--s1); border-top:1px solid var(--bd); padding:11px 13px; display:none">
+        <div class="res-lbl">CHIPSET NOTES</div>
+        <div class="res-val" id="resNoteVal" style="font-size:11px; margin-top:2px; color:var(--t2)">—</div>
+      </div>
+      
+      <!-- Matching family listings -->
+      <div class="res-cell" style="background:var(--s1); border-top:1px solid var(--bd); padding:11px 13px">
+        <div class="res-lbl">MATCHING FAMILY CHIPS</div>
+        <div class="family-wrap" id="familyWrap">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Dual Price row -->
+      <div class="price-row">
+        <div class="price-cell">
+          <div class="price-lbl">BUYING PRICE</div>
+          <div class="price-badge cb2">🔐 Coded</div>
+          <div class="price-val" id="RPC">—</div>
+        </div>
+        <div class="price-cell">
+          <div class="price-lbl">BUYING PRICE</div>
+          <div class="price-badge nb2">📦 Non-Code</div>
+          <div class="price-val" id="RPNC">—</div>
+        </div>
+      </div>
+      <div class="res-actions">
+        <button class="res-btn" onclick="copyResult()">📋 Copy Details</button>
+        <button class="res-btn" onclick="saveToHistoryDirect()">💾 Log Scan</button>
+      </div>
+    </div>
+
+    <!-- Non-Code Saving Flow -->
+    <div class="warn-card" id="ncFlowCard" style="display:none">
+      <div class="warn-title" style="color:var(--g2)">⚠️ Code Not in Database</div>
+      <div class="tip-tx" style="margin-bottom:10px">This code is valid but has no recorded entries. You can save it as a <b>Non-Code</b> chip with an assigned capacity to retrieve current rates next time!</div>
+      <button class="abtn go" onclick="searchGoogleForChip()" style="margin-bottom:8px">🌐 Search Google for Storage Size</button>
+      
+      <div class="ml" style="margin-bottom:4px">SELECT GB CAPACITY:</div>
+      <div class="ptabs" style="margin-bottom:10px" id="ncGbSelector">
+        <button class="ptab a" onclick="setNcGb('16GB', this)">16G</button>
+        <button class="ptab" onclick="setNcGb('32GB', this)">32G</button>
+        <button class="ptab" onclick="setNcGb('64GB', this)">64G</button>
+        <button class="ptab" onclick="setNcGb('128GB', this)">128G</button>
+        <button class="ptab" onclick="setNcGb('256GB', this)">256G</button>
+        <button class="ptab" onclick="setNcGb('512GB', this)">512G</button>
+      </div>
+      
+      <!-- Required Coded/Non-Coded selector -->
+      <div class="ml" style="margin-bottom:4px">CLASSIFICATION: <span style="color:var(--er)">* REQUIRED</span></div>
+      <div class="ptabs" style="margin-bottom:10px">
+        <button class="ptab" id="ncSelCoded" onclick="selectNcStatus('coded')">🔐 Coded</button>
+        <button class="ptab a" id="ncSelNoncode" onclick="selectNcStatus('noncode')">📦 Non-Coded</button>
+      </div>
+
+      <button class="abtn gn" onclick="saveAsNonCodeDirect()">➕ Save as Reference Entry</button>
+    </div>
+ 
+  </div>
+ 
+  <!-- ══ GRADES REFERENCE PAGE (Organized by Capacity accordions) ══ -->
+  <div class="pg" id="pg-grades">
+    <div class="stl">GRADE SCHEMES</div>
+    <div class="grade-card" id="gradesContainer" style="margin-bottom:12px">
+      <!-- Grades rendered via JS -->
+    </div>
+ 
+    <div class="pfx-card" style="margin-bottom:12px">
+      <div class="pfx-title">VALID PREFIX MATRIX:</div>
+      <div class="pfx-tags">
+        <span class="pfx-tag">KMR</span><span class="pfx-tag">KMQ</span><span class="pfx-tag">KMG</span>
+        <span class="pfx-tag">KMW</span><span class="pfx-tag">KMF</span><span class="pfx-tag">KMD</span>
+        <span class="pfx-tag">KM8</span><span class="pfx-tag">KM5</span><span class="pfx-tag">KM3</span>
+        <span class="pfx-tag">KM2</span><span class="pfx-tag">H9TQ</span><span class="pfx-tag">H9HQ</span>
+        <span class="pfx-tag">H9HP</span><span class="pfx-tag">TYD</span><span class="pfx-tag">TYE</span>
+      </div>
+    </div>
+    
+    <div class="stl">CAPACITY ACCORDION REGISTRY</div>
+    <div class="grade-card" style="display:flex; flex-direction:column; gap:4px; border:none" id="gradesAccordions">
+      <!-- Capacity accordions populated via JS -->
+    </div>
+ 
+    <div class="warn-card" style="margin-top:12px">
+      <div class="warn-title">⚠️ DO NOT ENTER THESE</div>
+      <div class="tip-tx" style="margin-bottom:6px">❌ <b>RAM / LPDDR:</b> Codes like K4E*, K4F*, H9HK*, H9HN* (usually wide and rectangular). Skip these!</div>
+      <div class="tip-tx">❌ <b>CPU / SoC:</b> Labeled Snapdragon, Helio, Kirin, Exynos (largest chip near board center). Skip these!</div>
+    </div>
+  </div>
+ 
+  <!-- ══ PRICES SETTINGS PAGE ══ -->
+  <div class="pg" id="pg-prices">
+    <div class="ptabs" style="margin-bottom:4px">
+      <button class="ptab a" id="pTabCoded" onclick="switchPriceTab('coded')">🔐 Coded Prices</button>
+      <button class="ptab" id="pTabNonCode" onclick="switchPriceTab('noncode')">📦 Non-Code Prices</button>
+    </div>
+ 
+    <div class="psec a" id="pSecCoded">
+      <div class="pmb cb2">🔐 CODED — verified inside database</div>
+      <div class="price-rows" id="pricesContainerCoded">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+ 
+    <div class="psec" id="pSecNonCode">
+      <div class="pmb nb2">📦 NON-CODE — unverified custom rates</div>
+      <div class="price-rows" id="pricesContainerNonCode">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+ 
+    <button class="abtn gn" onclick="savePrices()">💾 Save Custom Prices</button>
+    <div class="svt" id="pricesSavedTxt">✓ Prices successfully synced on local storage</div>
+  </div>
+ 
+  <!-- ══ REFERENCE DATABASE BROWSER ══ -->
+  <div class="pg" id="pg-ref">
+    <div class="stl">ALL CHIP DATABASE RECORDS</div>
+
+    <!-- Search + Filter Bar -->
+    <div class="ref-search-bar">
+      <input class="ref-search-input" id="refSearchInput" placeholder="🔍 Search by code, maker, type…" oninput="renderRefDatabase()">
+      <div class="ref-filters" id="refFilterRow">
+        <button class="ref-filter-btn a" onclick="setRefFilter('all', this)">All</button>
+        <button class="ref-filter-btn" onclick="setRefFilter('coded', this)">🔐 Coded</button>
+        <button class="ref-filter-btn" onclick="setRefFilter('noncode', this)">📦 Non-Coded</button>
+        <button class="ref-filter-btn" onclick="setRefFilter('8GB', this)">8GB</button>
+        <button class="ref-filter-btn" onclick="setRefFilter('16GB', this)">16GB</button>
+        <button class="ref-filter-btn" onclick="setRefFilter('32GB', this)">32GB</button>
+        <button class="ref-filter-btn" onclick="setRefFilter('64GB', this)">64GB</button>
+        <button class="ref-filter-btn" onclick="setRefFilter('128GB', this)">128GB</button>
+        <button class="ref-filter-btn" onclick="setRefFilter('256GB', this)">256GB</button>
+        <button class="ref-filter-btn" onclick="setRefFilter('512GB', this)">512GB</button>
+        <button class="ref-filter-btn" onclick="setRefFilter('Samsung', this)">Samsung</button>
+        <button class="ref-filter-btn" onclick="setRefFilter('SK Hynix', this)">SK Hynix</button>
+        <button class="ref-filter-btn" onclick="setRefFilter('Toshiba', this)">Toshiba</button>
+        <button class="ref-filter-btn" onclick="setRefFilter('Kioxia', this)">Kioxia</button>
+      </div>
+    </div>
+
+    <!-- Result count -->
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:2px 2px">
+      <div class="stl" style="letter-spacing:.5px">CHIP RECORDS</div>
+      <div class="ref-db-count" id="refDbCount">0 chips</div>
+    </div>
+
+    <!-- Chip Database List -->
+    <div class="ref-db-list" id="refDatabaseList">
+      <!-- Rendered via JS -->
+    </div>
+  </div>
+ 
+  <!-- ══ ADD PAGE (Manual Form + Reference Chart OCR) ══ -->
+  <div class="pg" id="pg-manual">
+
+    <!-- ─ SECTION 1: Reference Chart OCR Upload ─ -->
+    <div class="stl">SCAN REFERENCE CHART IMAGE</div>
+    <div class="ref-zone" onclick="document.getElementById('galleryInput').click()" id="refUploadZone">
+      <span class="ref-ico">📸</span>
+      <span class="ref-lbl" id="refUploadLbl">TAP TO UPLOAD REFERENCE CHART PHOTO<br><span style="font-size:9px;color:var(--t3)">AI will extract all chip codes automatically</span></span>
+      <img id="rp">
+    </div>
+    <input type="file" id="galleryInput" accept="image/*" onchange="handleRefUpload(this)">
+
+    <!-- OCR Extracted Checklist -->
+    <div class="ref-results" id="refResultsContainer">
+      <div class="ref-rh">
+        <div class="ref-rt">Extracted Chip Codes</div>
+        <div class="ref-rc" id="refFoundCount">0 Found</div>
+      </div>
+      <div id="refItemsList" style="max-height:300px; overflow-y:auto">
+        <!-- Checklist rendered here -->
+      </div>
+      <div style="padding:8px 10px; display:flex; gap:6px">
+        <button class="ref-add-btn" style="margin:0;flex:1" onclick="addAllExtractedToDatabase()">➕ Save Selected</button>
+        <button class="ref-add-btn" style="margin:0;flex:0 0 auto;background:var(--s3);color:var(--t2);border:1px solid var(--bd)" onclick="resetRefUpload()">✕ Clear</button>
+      </div>
+    </div>
+
+    <div class="tip" style="margin-bottom:4px">
+      <div class="tip-ico">📚</div>
+      <div class="tip-tx">Upload a photo of your printed chip reference chart. OCR reads every code and lets you review before saving to the database.</div>
+    </div>
+
+    <!-- ─ SECTION 2: Manual Single Entry ─ -->
+    <div class="stl" style="margin-top:6px">MANUALLY ADD SINGLE CHIP</div>
+    <div class="mf">
+      <div class="mg">
+        <div class="ml">CHIP MODEL CODE</div>
+        <input class="mi" id="mCode" placeholder="e.g. KMR820001M-B611" autocapitalize="characters">
+      </div>
+      <div class="mrow">
+        <div class="mg">
+          <div class="ml">GRADE</div>
+          <select class="ms" id="mGrade">
+            <option value="A5">A++++ (A5)</option>
+            <option value="A4">A+++ (A4)</option>
+            <option value="A3">A++ (A3)</option>
+            <option value="A2">A+ (A2)</option>
+            <option value="A1">A- (A1)</option>
+          </select>
+        </div>
+        <div class="mg">
+          <div class="ml">STORAGE</div>
+          <select class="ms" id="mStorage">
+            <option value="8GB">8GB</option>
+            <option value="16GB">16GB</option>
+            <option value="32GB">32GB</option>
+            <option value="64GB">64GB</option>
+            <option value="128GB">128GB</option>
+            <option value="256GB">256GB</option>
+            <option value="512GB">512GB</option>
+          </select>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="mg">
+          <div class="ml">CHIP TYPE</div>
+          <input class="mi" id="mType" placeholder="e.g. eMMC 5.1">
+        </div>
+        <div class="mg">
+          <div class="ml">MAKER</div>
+          <input class="mi" id="mMaker" placeholder="e.g. Samsung">
+        </div>
+      </div>
+
+      <!-- Classification selector -->
+      <div class="mg">
+        <div class="ml">CLASSIFICATION: <span style="color:var(--er)">* REQUIRED</span></div>
+        <div class="ptabs" id="mClassificationWrap">
+          <button class="ptab a" id="mcCodedBtn" onclick="setManualClassification('coded')">🔐 Coded</button>
+          <button class="ptab" id="mcNoncodeBtn" onclick="setManualClassification('noncode')">📦 Non-Coded</button>
+        </div>
+      </div>
+
+      <div class="mrow">
+        <div class="mg">
+          <div class="ml">ALIAS (OPTIONAL)</div>
+          <input class="mi" id="mAlias" placeholder="e.g. SEC 743">
+        </div>
+        <div class="mg">
+          <div class="ml">ALTERNATE CODES (OPTIONAL)</div>
+          <input class="mi" id="mAlternateCodes" placeholder="e.g. KMQ310006M-B417">
+        </div>
+      </div>
+
+      <div class="mg">
+        <div class="ml">NOTES (OPTIONAL)</div>
+        <input class="mi" id="mNotes" placeholder="e.g. standard repair replacement">
+      </div>
+
+      <button class="abtn gn" onclick="addManualChip()">➕ Save to Database</button>
+    </div>
+
+    <!-- Custom entries list -->
+    <div class="stl" style="margin-top:10px">CUSTOM ENTRIES IN DATABASE</div>
+    <div class="manual-list" id="manualListContainer">
+      <!-- Custom entries rendered via JS -->
+    </div>
+  </div>
+ 
+  <!-- ══ HISTORY PAGE ══ -->
+  <div class="pg" id="pg-history">
+    <div class="stl">MY CHIP CHECK LOGS</div>
+    
+    <div class="hist-list" id="historyContainer">
+      <!-- History entries rendered here -->
+    </div>
+ 
+    <button class="abtn go" id="btnClearHistory" onclick="clearMyHistory()" style="margin-top:10px; border-color:var(--g1); color:var(--g1)">🗑️ Clear My History</button>
+  </div>
+ 
+  <!-- ══ ADMIN CONSOLE PAGE ══ -->
+  <div class="pg" id="pg-admin">
+    <div class="admin-banner">
+      <span style="font-size:24px">🔐</span>
+      <div>
+        <div class="res-code-val" style="color:var(--ad)">Admin Control Panel</div>
+        <div class="tip-tx" style="font-size:10px">Full system access • IT Administrator privilege</div>
+      </div>
+    </div>
+ 
+    <div class="stl">SYSTEM STATISTICS</div>
+    <div class="admin-sec">
+      <div class="stats-grid">
+        <div class="stat-cell"><div class="stat-num" id="statScans">0</div><div class="stat-lbl">TOTAL SCANS</div></div>
+        <div class="stat-cell"><div class="stat-num" id="statTechs">0</div><div class="stat-lbl">TECHNICIANS</div></div>
+        <div class="stat-cell">
+          <div class="stat-num" id="statDb" style="font-size:16px; line-height:1.2">
+            <span id="statDbCoded" style="color:var(--g5)">0</span> / <span id="statDbNoncode" style="color:var(--g2)">0</span>
+          </div>
+          <div class="stat-lbl">CODED / NON-CODE DB</div>
+        </div>
+        <div class="stat-cell"><div class="stat-num" id="statManual">0</div><div class="stat-lbl">MANUAL ADDED</div></div>
+      </div>
+    </div>
+ 
+    <div class="stl">USER ACCOUNT MANAGEMENT</div>
+    <div class="admin-sec">
+      <div class="admin-sec-hdr">
+        <div class="admin-sec-t">Users</div>
+        <div class="tip-tx" id="userCountTxt">0 users</div>
+      </div>
+      <div id="usersListContainer">
+        <!-- Rendered dynamically -->
+      </div>
+      
+      <div class="add-user-form">
+        <div class="ml">➕ ADD NEW USER</div>
+        <div class="auf2">
+          <input class="afi" id="auName" placeholder="Username" autocapitalize="none">
+          <input class="afi" id="auPass" placeholder="Password" type="password">
+        </div>
+        <div class="auf2">
+          <select class="afs" id="auRole">
+            <option value="tech">Technician</option>
+            <option value="admin">Administrator</option>
+          </select>
+          <button class="afa" onclick="createNewUser()">Add User</button>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="stl">GLOBAL SCAN RECORDS (ALL USERS)</div>
+    <div class="admin-sec" style="max-height:220px; overflow-y:auto">
+      <div id="globalLogsContainer">
+        <!-- Global scans rendered here -->
+      </div>
+    </div>
+
+    <div class="stl">DATABASE CONTROLS</div>
+    <div class="mrow">
+      <button class="abtn go" onclick="exportDatabaseJSON()">📤 Backup DB (JSON)</button>
+      <button class="abtn go" onclick="clearGlobalScans()" style="color:var(--er); border-color:var(--er)">🗑️ Reset All Logs</button>
+    </div>
+  </div>
+ 
+</div>
+
+<!-- Floating Notification Toast -->
+<div class="toast" id="systemToast">✓ Toast confirmation message</div>
+
+<!-- Interactive Chip Image Crop & Rotate Adjuster Modal -->
+<div class="crop-modal" id="cropRotateModal">
+  <div class="crop-container">
+    <div class="crop-header">
+      <div class="crop-title">🔬 Align & Adjust <em>Chipset</em></div>
+      <button class="crop-close" onclick="closeCropModal()">✕</button>
+    </div>
+    
+    <div class="crop-preview-wrap" id="cropPreviewWrap">
+      <canvas id="cropCanvas"></canvas>
+      <div class="crop-box-overlay" id="cropBoxOverlay">
+        <div class="crop-handle crop-handle-tl" data-handle="tl"></div>
+        <div class="crop-handle crop-handle-tr" data-handle="tr"></div>
+        <div class="crop-handle crop-handle-bl" data-handle="bl"></div>
+        <div class="crop-handle crop-handle-br" data-handle="br"></div>
+      </div>
+    </div>
+    
+    <div class="crop-controls">
+      <div class="crop-btn-row">
+        <button class="crop-action-btn" onclick="rotateCropImage(-90)">🔄 Rotate -90°</button>
+        <button class="crop-action-btn" onclick="rotateCropImage(90)">🔄 Rotate +90°</button>
+      </div>
+      
+      <div class="crop-slider-group">
+        <div class="crop-slider-header">
+          <span>TILT CALIBRATION</span>
+          <span><em id="cropTiltVal">0</em>°</span>
+        </div>
+        <input type="range" class="crop-slider" id="cropTiltSlider" min="-45" max="45" value="0" oninput="onTiltSliderChange(this.value)">
+      </div>
+      
+      <button class="crop-scan-btn" onclick="executeCroppedScan()">⚡ ANALYZE & EXTRACT CODE</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Grade metadata details
+const GRADES_INFO = {
+  'A5': { name: 'A++++', tier: 'UFS 3.1 — Highest Quality', desc: 'Flagship storage chips. Super-fast read/write speeds, no bad sectors, like-new condition.', tags: ['KM8*', 'H9HQ*'] },
+  'A4': { name: 'A+++', tier: 'UFS 2.1/2.2 — High End', desc: 'Excellent condition. High speeds suitable for modern premium phones.', tags: ['KM5*', 'KM3*', 'KM2*'] },
+  'A3': { name: 'A++', tier: 'eMMC 5.1 — Premium', desc: 'Premium grade eMMC 5.1. Solid speeds, high durability, standard mid-range.', tags: ['KMR*', 'KMQ*'] },
+  'A2': { name: 'A+', tier: 'eMMC 5.1 — Standard', desc: 'Solid eMMC storage, entry-level flagship replacement.', tags: ['KMG*', 'KMW*', 'KMF*', 'H9TQ*'] },
+  'A1': { name: 'A-', tier: 'eMMC 4.5 — Older Gen', desc: 'Budget or legacy storage. Low read/write cycles left, lowest price.', tags: ['KMD*', 'TYD*', 'TYE*'] }
+};
+
+// State Variables
+let currentUser = null;
+let currentTab = 'scan';
+let activePriceTab = 'coded';
+let activeStream = null;
+let autoScanInterval = null; // Auto-scan periodic loop
+let activeRefFilter = 'all'; // REF tab active filter
+let isScanningFrame = false; // Mutex flag to prevent OCR overlapping
+let localDatabase = [];
+let localPricesCoded = {};
+let localPricesNonCode = {};
+let scanHistory = [];
+let selectedNcGb = '16GB';
+let selectedNcStatus = 'noncode'; // Classification state
+let selectedManualStatus = 'coded'; // Manual add state
+let currentCheckCode = '';
+let lastAutoCode = '';
+let consecutiveCount = 0;
+
+// Web Audio API Synthesizer Chime
+function playScanChime() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Play two notes (chime effect)
+    const playNote = (freq, startTime, duration) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, startTime);
+      
+      gain.gain.setValueAtTime(0.08, startTime);
+      // Exponential envelope decay
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+      
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    };
+
+    const now = audioCtx.currentTime;
+    playNote(659.25, now, 0.15); // E5 Note
+    playNote(880.00, now + 0.1, 0.3); // A5 Note
+  } catch (err) {
+    // Graceful fallback if audio context blocked by browser autoplay rules
+  }
+}
+
+// CSRF Utility for Django POST Requests
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+// ═══ APP INITIALIZATION ═══
+document.addEventListener('DOMContentLoaded', () => {
+  initStorage();
+  checkLoginSession();
+  renderGrades();
+});
+
+async function initStorage() {
+  try {
+    // 1. Fetch Prices from Django Backend
+    const priceRes = await fetch('/api/prices/');
+    const priceData = await priceRes.json();
+    localPricesCoded = priceData.coded || {};
+    localPricesNonCode = priceData.noncode || {};
+
+    // 2. Fetch Chips from Django Backend
+    const chipRes = await fetch('/api/chips/');
+    localDatabase = await chipRes.json();
+
+    // 3. Render dynamic items
+    renderPricesFields();
+    updateManualAddedList();
+    renderCapacityAccordions();
+  } catch (err) {
+    showToast("Error initializing connection with Django database.", true);
+  }
+}
+
+// ═══ SESSION & USER ACCOUNT CONTROLLERS ═══
+function checkLoginSession() {
+  const cached = localStorage.getItem('cs_current_session');
+  if (cached) {
+    const user = JSON.parse(cached);
+    loginSuccess(user, false);
+  } else {
+    document.getElementById('LS').classList.remove('h');
+  }
+}
+
+async function doLogin() {
+  const u = document.getElementById('lU').value.trim();
+  const p = document.getElementById('lP').value.trim();
+  const errEl = document.getElementById('lE');
+  
+  errEl.classList.remove('s');
+
+  try {
+    const res = await fetch('/api/login/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ username: u, password: p })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      loginSuccess(data.user);
+      document.getElementById('lU').value = '';
+      document.getElementById('lP').value = '';
+    } else {
+      errEl.classList.add('s');
+    }
+  } catch (err) {
+    errEl.classList.add('s');
+  }
+}
+
+function loginSuccess(user, showWelcome = true) {
+  currentUser = user;
+  localStorage.setItem('cs_current_session', JSON.stringify(user));
+  document.getElementById('LS').classList.add('h');
+
+  const uc = document.getElementById('UC');
+  const udp = document.getElementById('UDP');
+  const ul = document.getElementById('UL');
+  ul.textContent = user.username.toUpperCase();
+  
+  if (user.role === 'admin') {
+    uc.classList.add('adm');
+    udp.classList.add('ap');
+    document.getElementById('nb-admin').style.display = 'flex';
+  } else {
+    uc.classList.remove('adm');
+    udp.classList.remove('ap');
+    document.getElementById('nb-admin').style.display = 'none';
+  }
+
+  if (showWelcome) {
+    showToast(`Welcome back, ${user.username}!`);
+  }
+  goTab('scan');
+}
+
+function doLogout() {
+  stopCamera();
+  currentUser = null;
+  localStorage.removeItem('cs_current_session');
+  document.getElementById('LS').classList.remove('h');
+}
+
+// ═══ NAVIGATION / TAB CONTROLLER ═══
+function goTab(tabName) {
+  if (currentTab === 'scan' && tabName !== 'scan') {
+    stopCamera();
+  }
+
+  currentTab = tabName;
+  
+  document.querySelectorAll('.nb').forEach(btn => btn.classList.remove('a'));
+  const activeBtn = document.getElementById(`nb-${tabName}`);
+  if (activeBtn) activeBtn.classList.add('a');
+
+  document.querySelectorAll('.pg').forEach(pg => pg.classList.remove('a'));
+  const activePg = document.getElementById(`pg-${tabName}`);
+  if (activePg) activePg.classList.add('a');
+
+  if (tabName === 'history') {
+    renderHistory();
+  } else if (tabName === 'admin') {
+    updateAdminPanel();
+  } else if (tabName === 'prices') {
+    initStorage();
+  } else if (tabName === 'grades') {
+    renderCapacityAccordions();
+  } else if (tabName === 'ref') {
+    renderRefDatabase();
+  }
+}
+
+// ═══ AUTOMATIC HANDS-FREE CAMERA SCANNER ═══
+async function startCamera() {
+  const video = document.getElementById('scanVideo');
+  const statusTxt = document.getElementById('scanStatusTxt');
+  const dot = document.getElementById('scanDot');
+  const line = document.getElementById('scanLine');
+  const lbl = document.getElementById('scanLabel');
+  const autoBtn = document.getElementById('btnCapture');
+
+  try {
+    if (activeStream) {
+      stopCamera();
+    }
+
+    const constraints = {
+      video: { facingMode: 'environment', width: { ideal: 640 }, height: { ideal: 480 } }
+    };
+
+    activeStream = await navigator.mediaDevices.getUserMedia(constraints);
+    video.srcObject = activeStream;
+    video.play();
+
+    statusTxt.textContent = "Scanner Live";
+    dot.classList.add('live');
+    line.classList.add('active');
+    lbl.textContent = "Auto-Scan Active: Focus camera on chip markings";
+    autoBtn.textContent = "AUTO-ON";
+    autoBtn.style.color = "var(--g5)";
+    
+    // Boot automated OCR loop (runs character query every 1.5 seconds)
+    autoScanInterval = setInterval(() => {
+      if (!isScanningFrame && activeStream) {
+        autoGrabAndScan();
+      }
+    }, 1500);
+
+  } catch (err) {
+    showToast("Camera access failed. Sandboxed simulation started.", true);
+    statusTxt.textContent = "Demo Sandbox";
+    dot.classList.add('live');
+    line.classList.add('active');
+    lbl.textContent = "Running in simulated scan sandbox";
+    autoBtn.textContent = "SANDBOX";
+    autoBtn.style.color = "var(--g5)";
+    
+    // Sandboxed loop simulation
+    autoScanInterval = setInterval(() => {
+      runOcrSimulation();
+    }, 4000);
+  }
+}
+
+function stopCamera() {
+  const video = document.getElementById('scanVideo');
+  const statusTxt = document.getElementById('scanStatusTxt');
+  const dot = document.getElementById('scanDot');
+  const line = document.getElementById('scanLine');
+  const lbl = document.getElementById('scanLabel');
+  const autoBtn = document.getElementById('btnCapture');
+
+  if (autoScanInterval) {
+    clearInterval(autoScanInterval);
+    autoScanInterval = null;
+  }
+
+  if (activeStream) {
+    activeStream.getTracks().forEach(track => track.stop());
+    activeStream = null;
+  }
+  
+  video.srcObject = null;
+  statusTxt.textContent = "Camera Off";
+  dot.classList.remove('live');
+  line.classList.remove('active');
+  lbl.textContent = "Tap START to open camera";
+  autoBtn.textContent = "AUTO-OFF";
+  autoBtn.style.color = "var(--t3)";
+}
+
+// ═══ REUSABLE ADVANCED OCR PREPROCESSING PIPELINE ═══
+function preprocessCanvasForOCR(img, canvas) {
+  const TARGET_PX = 2000;
+  const maxDim = Math.max(img.width, img.height);
+  const scale = maxDim < TARGET_PX ? Math.min(3, TARGET_PX / maxDim) : 1;
+  const W = Math.round(img.width  * scale);
+  const H = Math.round(img.height * scale);
+
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(img, 0, 0, W, H);
+
+  const imgData = ctx.getImageData(0, 0, W, H);
+  const d = imgData.data;
+  const total = W * H;
+
+  // Weighted Grayscale
+  const gray = new Float32Array(total);
+  for (let i = 0, p = 0; i < d.length; i += 4, p++) {
+    gray[p] = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+  }
+
+  // Histogram stretch (contrast stretch)
+  let lo = 255, hi = 0;
+  for (let p = 0; p < total; p++) {
+    if (gray[p] < lo) lo = gray[p];
+    if (gray[p] > hi) hi = gray[p];
+  }
+  const rng = hi - lo || 1;
+  for (let p = 0; p < total; p++) {
+    gray[p] = ((gray[p] - lo) / rng) * 255;
+  }
+
+  // Adaptive threshold
+  const R = Math.max(8, Math.round(Math.min(W, H) * 0.02)) | 0;
+  const C = 12;
+  const intg = new Float64Array((W + 1) * (H + 1));
+  for (let y = 1; y <= H; y++) {
+    for (let x = 1; x <= W; x++) {
+      intg[y * (W + 1) + x] =
+        gray[(y - 1) * W + (x - 1)]
+        + intg[(y - 1) * (W + 1) + x]
+        + intg[y * (W + 1) + (x - 1)]
+        - intg[(y - 1) * (W + 1) + (x - 1)];
+    }
+  }
+
+  const bin = new Uint8ClampedArray(total);
+  for (let y = 0; y < H; y++) {
+    const y1 = Math.max(0, y - R), y2 = Math.min(H - 1, y + R);
+    for (let x = 0; x < W; x++) {
+      const x1 = Math.max(0, x - R), x2 = Math.min(W - 1, x + R);
+      const area = (y2 - y1 + 1) * (x2 - x1 + 1);
+      const sum = intg[(y2 + 1) * (W + 1) + (x2 + 1)]
+                - intg[(y1)     * (W + 1) + (x2 + 1)]
+                - intg[(y2 + 1) * (W + 1) + (x1)]
+                + intg[(y1)     * (W + 1) + (x1)];
+      const localMean = sum / area;
+      bin[y * W + x] = gray[y * W + x] < localMean - C ? 0 : 255;
+    }
+  }
+
+  for (let i = 0, p = 0; i < d.length; i += 4, p++) {
+    d[i] = bin[p]; d[i + 1] = bin[p]; d[i + 2] = bin[p]; d[i + 3] = 255;
+  }
+  ctx.putImageData(imgData, 0, 0);
+}
+
+// ═══ HANDS-FREE AUTOMATIC SCANNING CAPTURE (FULL-FRAME) ═══
+function autoGrabAndScan() {
+  const video = document.getElementById('scanVideo');
+  const canvas = document.getElementById('captureCanvas');
+
+  isScanningFrame = true;
+
+  const ctx = canvas.getContext('2d');
+  // Use FULL video dimensions — no cropping, no frame restriction
+  canvas.width = video.videoWidth || 640;
+  canvas.height = video.videoHeight || 480;
+
+  // Draw the ENTIRE camera view — no offset, no crop
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  // Preprocess the full frame for OCR
+  const W = canvas.width;
+  const H = canvas.height;
+  const imgData = ctx.getImageData(0, 0, W, H);
+  const d = imgData.data;
+  const total = W * H;
+
+  // Weighted Grayscale
+  const gray = new Float32Array(total);
+  for (let i = 0, p = 0; i < d.length; i += 4, p++) {
+    gray[p] = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+  }
+
+  // Histogram stretch
+  let lo = 255, hi = 0;
+  for (let p = 0; p < total; p++) {
+    if (gray[p] < lo) lo = gray[p];
+    if (gray[p] > hi) hi = gray[p];
+  }
+  const rng = hi - lo || 1;
+  for (let p = 0; p < total; p++) {
+    gray[p] = ((gray[p] - lo) / rng) * 255;
+  }
+
+  // Adaptive threshold on full frame
+  const R = Math.max(6, Math.round(Math.min(W, H) * 0.03)) | 0;
+  const C = 10;
+  const intg = new Float64Array((W + 1) * (H + 1));
+  for (let y = 1; y <= H; y++) {
+    for (let x = 1; x <= W; x++) {
+      intg[y * (W + 1) + x] =
+        gray[(y - 1) * W + (x - 1)]
+        + intg[(y - 1) * (W + 1) + x]
+        + intg[y * (W + 1) + (x - 1)]
+        - intg[(y - 1) * (W + 1) + (x - 1)];
+    }
+  }
+
+  const bin = new Uint8ClampedArray(total);
+  for (let y = 0; y < H; y++) {
+    const y1 = Math.max(0, y - R), y2 = Math.min(H - 1, y + R);
+    for (let x = 0; x < W; x++) {
+      const x1 = Math.max(0, x - R), x2 = Math.min(W - 1, x + R);
+      const area = (y2 - y1 + 1) * (x2 - x1 + 1);
+      const sum = intg[(y2 + 1) * (W + 1) + (x2 + 1)]
+                - intg[(y1)     * (W + 1) + (x2 + 1)]
+                - intg[(y2 + 1) * (W + 1) + (x1)]
+                + intg[(y1)     * (W + 1) + (x1)];
+      const localMean = sum / area;
+      bin[y * W + x] = gray[y * W + x] < localMean - C ? 0 : 255;
+    }
+  }
+
+  for (let i = 0, p = 0; i < d.length; i += 4, p++) {
+    d[i] = bin[p]; d[i + 1] = bin[p]; d[i + 2] = bin[p]; d[i + 3] = 255;
+  }
+  ctx.putImageData(imgData, 0, 0);
+
+  // Run OCR on the FULL preprocessed frame
+  if (window.Tesseract) {
+    Tesseract.recognize(canvas, 'eng').then(({ data: { text } }) => {
+      processAutoOcrResult(text);
+      isScanningFrame = false;
+    }).catch(() => {
+      isScanningFrame = false;
+    });
+  } else {
+    isScanningFrame = false;
+  }
+}
+
+// Helper to rotate canvas in background for automatic OCR retries
+function rotateCanvasToAngle(img, canvas, angle) {
+  const rad = (angle * Math.PI) / 180;
+  const absCos = Math.abs(Math.cos(rad));
+  const absSin = Math.abs(Math.sin(rad));
+  
+  const w = img.width;
+  const h = img.height;
+  const canvasW = Math.round(w * absCos + h * absSin);
+  const canvasH = Math.round(w * absSin + h * absCos);
+  
+  canvas.width = canvasW;
+  canvas.height = canvasH;
+  
+  const ctx = canvas.getContext('2d');
+  ctx.translate(canvasW / 2, canvasH / 2);
+  ctx.rotate(rad);
+  ctx.drawImage(img, -w / 2, -h / 2, w, h);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+}
+
+// Show/remove interactive alignment adjuster pill
+function showManualCropRecommendation() {
+  const sugBox = document.getElementById('SGB');
+  sugBox.innerHTML = `
+    <div class="crop-scan-failed-pill" onclick="openCropModalWithLastImage()">
+      ⚠️ Scanning failed. Tap here to crop & align chipset markings manually
+    </div>
+  `;
+  sugBox.classList.add('s');
+  sugBox.scrollIntoView({ behavior: 'smooth' });
+}
+
+function removeFailurePill() {
+  const sugBox = document.getElementById('SGB');
+  if (sugBox && sugBox.querySelector('.crop-scan-failed-pill')) {
+    sugBox.innerHTML = '';
+    sugBox.classList.remove('s');
+  }
+}
+
+function handleGallery(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const overlay = document.getElementById('aiOverlay');
+    const msg = document.getElementById('aiMsg');
+    overlay.classList.add('s');
+    msg.innerHTML = `🖼️ <b>GALLERY LOADER</b>: Preparing image asset...`;
+
+    const img = new Image();
+    img.onload = function() {
+      // Store globally for manual adjustment
+      window.lastUploadedCanvasImage = img;
+      removeFailurePill();
+      
+      const canvas = document.createElement('canvas');
+      
+      // Perform state-of-the-art OCR image preprocessing
+      msg.innerHTML = `🔬 <b>PREPROCESSING</b>: Enhancing contrast and lighting for OCR...`;
+      preprocessCanvasForOCR(img, canvas);
+
+      if (window.Tesseract) {
+        msg.innerHTML = `🤖 <b>AI SCANNING</b>: Reading chip models...`;
+        Tesseract.recognize(canvas, 'eng').then(({ data: { text } }) => {
+          overlay.classList.remove('s');
+          processOcrResult(text, 0, [90, 180, 270]);
+        }).catch(() => {
+          overlay.classList.remove('s');
+          processOcrResult('', 0, [90, 180, 270]);
+        });
+      } else {
+        setTimeout(() => {
+          overlay.classList.remove('s');
+          runOcrSimulation();
+        }, 1500);
+      }
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ═══ OCR LOGIC RESOLVER ═══
+function processAutoOcrResult(rawText) {
+  const clean = rawText.toUpperCase().replace(/[\s\n\r]/g, '');
+  // Broad match including storage prefixes, CPU prefixes, and Qualcomm PMIC prefixes
+  const regex = /\b(KMR|KMQ|KMG|KMW|KMF|KMD|KM8|KM5|KM3|KM2|H9TQ|H9HQ|H9HP|TYD|TYE|PM|SM|SDM|MT|MSM)[A-Z0-9-]{3,16}\b/;
+  const matched = clean.match(regex) || rawText.toUpperCase().match(/\b[A-Z0-9-]{6,16}\b/);
+
+  const lbl = document.getElementById('scanLabel');
+
+  if (matched && matched[0]) {
+    const result = matched[0].replace(/[^A-Z0-9-]/g, '');
+    
+    if (result === lastAutoCode) {
+      consecutiveCount++;
+    } else {
+      lastAutoCode = result;
+      consecutiveCount = 1;
+    }
+
+    if (consecutiveCount === 1) {
+      lbl.innerHTML = `🎯 Detected: <b>${result}</b> (Verifying... 3)`;
+    } else if (consecutiveCount === 2) {
+      lbl.innerHTML = `🎯 Stable: <b>${result}</b> (Verifying... 2)`;
+    } else if (consecutiveCount >= 3) {
+      lbl.innerHTML = `⚡ <b>LOCKED: ${result}</b>`;
+      playScanChime();
+      stopCamera();
+      
+      document.getElementById('CI').value = result;
+      showToast(`✓ Locked Stable Code: ${result}`);
+      checkChip();
+      
+      // Reset variables
+      lastAutoCode = '';
+      consecutiveCount = 0;
+    }
+  } else {
+    if (consecutiveCount > 0) {
+      consecutiveCount--;
+      if (consecutiveCount === 0) {
+        lastAutoCode = '';
+        lbl.textContent = "Auto-Scan Active: Focus camera on chip markings";
+      } else {
+        lbl.innerHTML = `🔍 Scanning... (stabilizing match...)`;
+      }
+    }
+  }
+}
+
+function processOcrResult(rawText, attemptAngle = 0, nextAngles = []) {
+  // Use broad regex & matchAll() to catch ALL possible storage chips, CPUs, and PMICs in a single scan
+  const regex = /(KMR|KMQ|KMG|KMW|KMF|KMD|KM8|KM5|KM3|KM2|H9TQ|H9HQ|H9HP|TYD|TYE|PM|SM|SDM|MT|MSM)[A-Z0-9-]{3,16}/gi;
+  const matches = [...rawText.matchAll(regex)].map(m => m[0].toUpperCase().replace(/[^A-Z0-9-]/g, ''));
+  
+  // Deduplicate
+  const uniqueMatches = [...new Set(matches)];
+
+  if (uniqueMatches.length > 1) {
+    playScanChime();
+    showToast(`✓ AI Vision: ${uniqueMatches.length} chipsets detected! Tap one in suggestions.`);
+    
+    const sugBox = document.getElementById('SGB');
+    sugBox.innerHTML = '<div style="font-size:9px;color:var(--g5);font-family:monospace;padding:8px 12px;border-bottom:1px solid var(--bd)">📷 MULTIPLE CHIPS DETECTED (TAP TO CHOOSE):</div>';
+    
+    uniqueMatches.forEach(code => {
+      const dbMatch = localDatabase.find(x => x.code.toUpperCase() === code);
+      const row = document.createElement('div');
+      row.className = 'sug-item';
+      
+      let badgeHtml = '';
+      if (dbMatch) {
+        const gInfo = GRADES_INFO[dbMatch.grade] || { name: dbMatch.grade };
+        let badgeClass = 'c5 bg5';
+        if (dbMatch.grade === 'A4') badgeClass = 'c4 bg4';
+        if (dbMatch.grade === 'A3') badgeClass = 'c3 bg3';
+        if (dbMatch.grade === 'A2') badgeClass = 'c2 bg2';
+        if (dbMatch.grade === 'A1') badgeClass = 'c1 bg1';
+        badgeHtml = `<span class="sug-tag ${badgeClass}">${gInfo.name}</span>`;
+      } else {
+        badgeHtml = `<span class="sug-tag" style="background:var(--s4);color:var(--t2)">Unregistered</span>`;
+      }
+
+      row.innerHTML = `
+        <span>${code} ${dbMatch ? `(${dbMatch.size})` : ''}</span>
+        ${badgeHtml}
+      `;
+      
+      row.onclick = () => {
+        document.getElementById('CI').value = code;
+        sugBox.classList.remove('s');
+        checkChip();
+      };
+      sugBox.appendChild(row);
+    });
+    sugBox.classList.add('s');
+    document.getElementById('CI').scrollIntoView({ behavior: 'smooth' });
+    removeFailurePill();
+  } else if (uniqueMatches.length === 1) {
+    const result = uniqueMatches[0];
+    playScanChime();
+    document.getElementById('CI').value = result;
+    showToast(`✓ AI Vision Detected: ${result}`);
+    checkChip();
+    removeFailurePill();
+  } else {
+    // Fallback: capture any generic codes (length 6 to 18)
+    const fallbackRegex = /\b[A-Z0-9-]{6,18}\b/gi;
+    const fallbacks = [...rawText.matchAll(fallbackRegex)].map(m => m[0].toUpperCase().replace(/[^A-Z0-9-]/g, ''));
+    const uniqueFallbacks = [...new Set(fallbacks)];
+
+    if (uniqueFallbacks.length > 0) {
+      if (uniqueFallbacks.length > 1) {
+        playScanChime();
+        showToast(`✓ AI Vision: ${uniqueFallbacks.length} possible codes found.`);
+        
+        const sugBox = document.getElementById('SGB');
+        sugBox.innerHTML = '<div style="font-size:9px;color:var(--g2);font-family:monospace;padding:8px 12px;border-bottom:1px solid var(--bd)">📷 CANDIDATES IN IMAGE (TAP TO SELECT):</div>';
+        
+        uniqueFallbacks.forEach(code => {
+          const row = document.createElement('div');
+          row.className = 'sug-item';
+          row.innerHTML = `<span>${code}</span>`;
+          row.onclick = () => {
+            document.getElementById('CI').value = code;
+            sugBox.classList.remove('s');
+            checkChip();
+          };
+          sugBox.appendChild(row);
+        });
+        sugBox.classList.add('s');
+      } else {
+        const best = uniqueFallbacks[0];
+        playScanChime();
+        document.getElementById('CI').value = best;
+        showToast(`✓ AI Vision Filled Candidate: ${best}`);
+        checkChip();
+      }
+      removeFailurePill();
+    } else {
+      // If we failed to find any codes but still have rotated angles to attempt:
+      if (nextAngles && nextAngles.length > 0) {
+        const nextAngle = nextAngles.shift();
+        const overlay = document.getElementById('aiOverlay');
+        const msg = document.getElementById('aiMsg');
+        
+        overlay.classList.add('s');
+        msg.innerHTML = `🔄 <b>ALIGNMENT RETRY (${nextAngle}°)</b>: Scanning rotated orientation...`;
+        
+        // Render rotated canvas in background
+        const tempCanvas = document.createElement('canvas');
+        rotateCanvasToAngle(window.lastUploadedCanvasImage, tempCanvas, nextAngle);
+        
+        // Wait minor cycle and scan rotated image
+        const imgObj = new Image();
+        imgObj.onload = function() {
+          const preppedCanvas = document.createElement('canvas');
+          preprocessCanvasForOCR(imgObj, preppedCanvas);
+          
+          Tesseract.recognize(preppedCanvas, 'eng').then(({ data: { text } }) => {
+            processOcrResult(text, nextAngle, nextAngles);
+          }).catch(() => {
+            processOcrResult('', nextAngle, nextAngles);
+          });
+        };
+        imgObj.src = tempCanvas.toDataURL();
+      } else {
+        // Complete failure across all rotations! Hide overlay and prompt manual cropping modal
+        const overlay = document.getElementById('aiOverlay');
+        if (overlay) overlay.classList.remove('s');
+        
+        showToast("❌ No chip code detected in this photo. Try better lighting, hold the camera closer, or type the code manually.", true);
+        showManualCropRecommendation();
+      }
+    }
+  }
+}
+
+
+function runOcrSimulation() {
+  if (localDatabase.length === 0) return;
+  const randomIndex = Math.floor(Math.random() * localDatabase.length);
+  const simulatedChip = localDatabase[randomIndex].code;
+  
+  // Play synthesized chime
+  playScanChime();
+  stopCamera();
+
+  document.getElementById('CI').value = simulatedChip;
+  showToast(`✓ Sandbox auto-scanned chip: ${simulatedChip}`);
+  checkChip();
+}
+
+// ═══ SMART CODE CHECKER & REAL-TIME MANUAL ADJUSTMENT ═══
+function onCorrectionInput(input) {
+  const correctedVal = input.value.trim().toUpperCase();
+  if (correctedVal.length >= 5) {
+    document.getElementById('CI').value = correctedVal;
+    // Debounce re-check
+    clearTimeout(window.correctTimeout);
+    window.correctTimeout = setTimeout(() => {
+      checkChip();
+    }, 400);
+  }
+}
+
+function onChipInput(input) {
+  const val = input.value.trim().toUpperCase();
+  const sugBox = document.getElementById('SGB');
+  
+  if (!val) {
+    sugBox.classList.remove('s');
+    return;
+  }
+
+  const matches = localDatabase.filter(x => x.code.toUpperCase().includes(val)).slice(0, 4);
+
+  if (matches.length > 0) {
+    sugBox.innerHTML = '';
+    matches.forEach(item => {
+      const gInfo = GRADES_INFO[item.grade] || { name: item.grade };
+      const row = document.createElement('div');
+      row.className = 'sug-item';
+      
+      const regex = new RegExp(`(${val})`, 'gi');
+      const highlighted = item.code.replace(regex, `<span class="sug-hi">$1</span>`);
+      
+      let badgeClass = 'c5 bg5';
+      if (item.grade === 'A4') badgeClass = 'c4 bg4';
+      if (item.grade === 'A3') badgeClass = 'c3 bg3';
+      if (item.grade === 'A2') badgeClass = 'c2 bg2';
+      if (item.grade === 'A1') badgeClass = 'c1 bg1';
+
+      row.innerHTML = `
+        <span>${highlighted} (${item.size})</span>
+        <span class="sug-tag ${badgeClass}">${gInfo.name}</span>
+      `;
+      row.onclick = () => {
+        input.value = item.code;
+        sugBox.classList.remove('s');
+        checkChip();
+      };
+      sugBox.appendChild(row);
+    });
+    sugBox.classList.add('s');
+  } else {
+    sugBox.classList.remove('s');
+  }
+}
+
+function checkChip() {
+  const code = document.getElementById('CI').value.trim().toUpperCase();
+  const sugBox = document.getElementById('SGB');
+  const errCard = document.getElementById('errCard');
+  const resultCard = document.getElementById('RC');
+  const ncCard = document.getElementById('ncFlowCard');
+  const corrRow = document.getElementById('ocrCorrectionRow');
+
+  sugBox.classList.remove('s');
+  errCard.classList.remove('s');
+  resultCard.classList.remove('s');
+  ncCard.style.display = 'none';
+  corrRow.style.display = 'none';
+
+  if (!code) {
+    showToast("Please enter a valid chip model code first.", true);
+    return;
+  }
+
+  currentCheckCode = code;
+
+  // 1. RAM block protection (Skip RAM memory matrices)
+  if (/^(K4E|K4F|H9HK|H9HN)/i.test(code)) {
+    errCard.classList.add('s');
+    document.getElementById('errTitle').textContent = "❌ RAM Chip Detected";
+    document.getElementById('errBody').innerHTML = `You have entered code <b>${code}</b> which belongs to a <b>LPDDR/RAM</b> memory matrix. Scanners skip RAM. Please look for the storage model (eMMC/UFS) nearby.`;
+    document.getElementById('errTags').innerHTML = `<span class="err-tag">RAM detected</span>`;
+    showToast("Lookup failed: RAM not allowed.", true);
+    return;
+  }
+
+  // 2. Qualcomm PMIC block protection
+  if (/^(PM|QualcommPM)/i.test(code)) {
+    errCard.classList.add('s');
+    document.getElementById('errTitle').textContent = "❌ PMIC Chip Detected";
+    document.getElementById('errBody').innerHTML = `You have entered code <b>${code}</b> which belongs to a Qualcomm <b>Power Management IC (PMIC)</b>. Scanners do not buy PMIC components. Scan the storage chip instead.`;
+    document.getElementById('errTags').innerHTML = `<span class="err-tag">PMIC detected</span>`;
+    showToast("Lookup failed: PMIC not allowed.", true);
+    return;
+  }
+
+  // 3. CPU bypass protection
+  if (/^(SNAP|HELI|KIR|EXYN|SM|SDM|MT|MSM|HELIO|EXYNOS|KIRIN)/i.test(code)) {
+    errCard.classList.add('s');
+    document.getElementById('errTitle').textContent = "❌ CPU / SoC Detected";
+    document.getElementById('errBody').innerHTML = `You have entered code <b>${code}</b> which belongs to the primary phone <b>Processor/CPU</b>. Scanners do not buy CPUs. Scan the storage chip instead.`;
+    document.getElementById('errTags').innerHTML = `<span class="err-tag">CPU bypass triggered</span>`;
+    showToast("Lookup failed: CPU not allowed.", true);
+    return;
+  }
+
+  // Query local database for exact or close matches
+  const found = localDatabase.find(x => x.code.toUpperCase() === code) || 
+                localDatabase.find(x => x.alias && x.alias.toUpperCase() === code) ||
+                localDatabase.find(x => x.alternate_codes && x.alternate_codes.toUpperCase().split(',').map(c => c.trim()).includes(code));
+
+  // Open real-time correction input for technician adjustment
+  corrRow.style.display = 'flex';
+  document.getElementById('CI_correct').value = code;
+
+  if (found) {
+    renderResultCard(found);
+  } else {
+    // Check if code has a fuzzy match inside DB to suggest close alternatives
+    const closeMatches = localDatabase.filter(x => getLevenshteinDistance(code, x.code.toUpperCase()) <= 3).slice(0, 3);
+    if (closeMatches.length > 0) {
+      showToast("⚠️ Chip not found. Tap suggestion for close matches!");
+      const sugBox = document.getElementById('SGB');
+      sugBox.innerHTML = '<div style="font-size:9px;color:var(--g2);font-family:monospace;padding:8px 12px;border-bottom:1px solid var(--bd)">🔍 DID YOU MEAN ONE OF THESE?</div>';
+      closeMatches.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'sug-item';
+        row.innerHTML = `<span>${item.code} (${item.size})</span><span class="sug-tag bg2 c2">Match</span>`;
+        row.onclick = () => {
+          document.getElementById('CI').value = item.code;
+          sugBox.classList.remove('s');
+          checkChip();
+        };
+        sugBox.appendChild(row);
+      });
+      sugBox.classList.add('s');
+    }
+    
+    // Code not in database: show save-as-reference flow for ANY code
+    ncCard.style.display = 'block';
+    ncCard.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+// Levenshtein distance for real AI similarity confidence scoring
+function getLevenshteinDistance(a, b) {
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1, // substitution
+          matrix[i][j - 1] + 1,     // insertion
+          matrix[i - 1][j] + 1      // deletion
+        );
+      }
+    }
+  }
+  return matrix[b.length][a.length];
+}
+
+// ═══ DYNAMIC CONFIDENCE RATING & FAMILY MATCHES ═══
+function calculateOcrConfidence(code, found) {
+  if (!found) return 40;
+  if (code === found.code) return 99;
+  
+  const dist = getLevenshteinDistance(code, found.code);
+  const maxLen = Math.max(code.length, found.code.length);
+  const similarity = (maxLen - dist) / maxLen;
+  
+  let confidence = Math.round(similarity * 100);
+  if (confidence < 30) confidence = 30;
+  return Math.min(confidence, 98);
+}
+
+function renderFamilyChips(targetChip) {
+  const wrap = document.getElementById('familyWrap');
+  wrap.innerHTML = '';
+
+  // Filter matching family members (same prefix brand + capacity)
+  const family = localDatabase.filter(x => 
+    x.code !== targetChip.code && 
+    (x.maker.toLowerCase() === targetChip.maker.toLowerCase() || x.size === targetChip.size)
+  ).slice(0, 5);
+
+  if (family.length === 0) {
+    wrap.innerHTML = `<span style="font-size:9px; color:var(--t3)">No matching family models.</span>`;
+    return;
+  }
+
+  family.forEach(chip => {
+    const badge = document.createElement('div');
+    badge.className = 'family-item';
+    badge.textContent = `${chip.code} (${chip.size})`;
+    badge.onclick = () => {
+      document.getElementById('CI').value = chip.code;
+      checkChip();
+    };
+    wrap.appendChild(badge);
+  });
+}
+
+function renderResultCard(chip) {
+  const resultCard = document.getElementById('RC');
+  const gInfo = GRADES_INFO[chip.grade] || { name: chip.grade, tier: 'Ungraded' };
+
+  // Classification badges
+  const cBadge = document.getElementById('resStatusBadge');
+  cBadge.textContent = chip.status === 'coded' ? '🔐 Coded' : '📦 Non-Coded';
+  cBadge.style.background = chip.status === 'coded' ? 'var(--g5b)' : 'var(--g2b)';
+  cBadge.style.color = chip.status === 'coded' ? 'var(--g5)' : 'var(--g2)';
+
+  document.getElementById('RCO').textContent = chip.code;
+  document.getElementById('RGB').textContent = gInfo.name;
+  document.getElementById('RGT').textContent = chip.grade;
+  document.getElementById('RTP').textContent = chip.type;
+  document.getElementById('RST').textContent = chip.size;
+  document.getElementById('RMK').textContent = chip.maker;
+
+  const bigGr = document.getElementById('RGB');
+  bigGr.className = 'grade-big';
+  if (chip.grade === 'A5') bigGr.classList.add('c5');
+  if (chip.grade === 'A4') bigGr.classList.add('c4');
+  if (chip.grade === 'A3') bigGr.classList.add('c3');
+  if (chip.grade === 'A2') bigGr.classList.add('c2');
+  if (chip.grade === 'A1') bigGr.classList.add('c1');
+
+  // Set match metrics
+  const confidence = calculateOcrConfidence(currentCheckCode, chip);
+  const confEl = document.getElementById('resConfidence');
+  confEl.textContent = `${confidence}%`;
+  confEl.style.color = confidence >= 85 ? 'var(--g5)' : confidence >= 60 ? 'var(--g2)' : 'var(--g1)';
+
+  // Set dynamic aliases and alternate codes section
+  const aliasRow = document.getElementById('resAliasRow');
+  const aliasVal = document.getElementById('resAliasVal');
+  let aliasText = '';
+  if (chip.alias) aliasText += `Alias: ${chip.alias}`;
+  if (chip.alternate_codes) {
+    if (aliasText) aliasText += ' | ';
+    aliasText += `Alt: ${chip.alternate_codes}`;
+  }
+  if (aliasText) {
+    aliasVal.textContent = aliasText;
+    aliasRow.style.display = 'block';
+  } else {
+    aliasRow.style.display = 'none';
+  }
+
+  // Set notes section
+  const noteRow = document.getElementById('resNoteRow');
+  const noteVal = document.getElementById('resNoteVal');
+  if (chip.note) {
+    noteVal.textContent = chip.note;
+    noteRow.style.display = 'block';
+  } else {
+    noteRow.style.display = 'none';
+  }
+
+  // Set family chips
+  renderFamilyChips(chip);
+
+  const codedPrice = localPricesCoded[chip.grade] || 0;
+  const nonCodePrice = localPricesNonCode[chip.grade] || 0;
+
+  document.getElementById('RPC').textContent = `₱${codedPrice}`;
+  document.getElementById('RPNC').textContent = `₱${nonCodePrice}`;
+
+  resultCard.classList.add('s');
+  resultCard.scrollIntoView({ behavior: 'smooth' });
+}
+
+// 🌐 missing searchGoogleForChip helper function
+function searchGoogleForChip() {
+  if (!currentCheckCode) return;
+  window.open(`https://www.google.com/search?q=${encodeURIComponent(currentCheckCode + ' storage chip specs')}`, '_blank');
+}
+
+// ═══ NON-CODE CAPACITY SELECTOR ═══
+function setNcGb(gb, btn) {
+  selectedNcGb = gb;
+  const wrap = document.getElementById('ncGbSelector');
+  if (wrap) {
+    wrap.querySelectorAll('.ptab').forEach(b => b.classList.remove('a'));
+  }
+  btn.classList.add('a');
+}
+
+// ═══ REQUIRED CLASSIFICATIONS ON SAVINGS ═══
+function selectNcStatus(status) {
+  selectedNcStatus = status;
+  const btnCoded = document.getElementById('ncSelCoded');
+  const btnNoncode = document.getElementById('ncSelNoncode');
+
+  if (status === 'coded') {
+    btnCoded.classList.add('a');
+    btnNoncode.classList.remove('a');
+  } else {
+    btnCoded.classList.remove('a');
+    btnNoncode.classList.add('a');
+  }
+}
+
+function setManualClassification(status) {
+  selectedManualStatus = status;
+  const btnC = document.getElementById('mcCodedBtn');
+  const btnNC = document.getElementById('mcNoncodeBtn');
+
+  if (status === 'coded') {
+    btnC.classList.add('a');
+    btnNC.classList.remove('a');
+  } else {
+    btnC.classList.remove('a');
+    btnNC.classList.add('a');
+  }
+}
+
+async function saveAsNonCodeDirect() {
+  if (!currentCheckCode) return;
+
+  let grade = 'A2'; 
+  let type = 'eMMC 5.1';
+  let maker = 'Samsung';
+
+  if (currentCheckCode.startsWith('KM8') || currentCheckCode.startsWith('H9HQ')) {
+    grade = 'A5';
+    type = 'UFS 3.1';
+    maker = currentCheckCode.startsWith('KM8') ? 'Samsung' : 'SK Hynix';
+  } else if (currentCheckCode.startsWith('KM5') || currentCheckCode.startsWith('KM3')) {
+    grade = 'A4';
+    type = 'UFS 2.1';
+  } else if (currentCheckCode.startsWith('TYD') || currentCheckCode.startsWith('TYE')) {
+    grade = 'A1';
+    type = 'eMMC 4.5';
+    maker = currentCheckCode.startsWith('TYD') ? 'Toshiba' : 'Kioxia';
+  }
+
+  const payload = {
+    code: currentCheckCode,
+    grade: grade,
+    size: selectedNcGb,
+    type: type,
+    maker: maker,
+    status: selectedNcStatus, // Required selection classification
+    note: 'Saved as non-code entry'
+  };
+
+  try {
+    const res = await fetch('/api/chips/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      showToast(`✓ Chip successfully added to SQLite DB: ${currentCheckCode}`);
+      document.getElementById('ncFlowCard').style.display = 'none';
+      await initStorage();
+      checkChip();
+    } else {
+      showToast(data.message, true);
+    }
+  } catch (err) {
+    showToast("Server communication error.", true);
+  }
+}
+
+// ═══ HISTORY PERSISTENCE ENDPOINTS ═══
+async function saveToHistoryDirect() {
+  if (!currentCheckCode) return;
+  const found = localDatabase.find(x => x.code.toUpperCase() === currentCheckCode);
+  if (!found) return;
+
+  try {
+    const res = await fetch('/api/history/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({
+        code: currentCheckCode,
+        user: currentUser ? currentUser.username : 'Anonymous',
+        status: found.status
+      })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      showToast("✓ Scan successfully logged in SQLite history!");
+    } else {
+      showToast(data.message, true);
+    }
+  } catch (err) {
+    showToast("Error writing log record.", true);
+  }
+}
+
+async function renderHistory() {
+  const container = document.getElementById('historyContainer');
+  container.innerHTML = '';
+
+  if (!currentUser) return;
+
+  try {
+    const res = await fetch(`/api/history/?username=${currentUser.username}&role=${currentUser.role}`);
+    scanHistory = await res.json();
+
+    if (scanHistory.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-ico">🕘</div>
+          <div class="empty-txt">No scan logs recorded yet.<br>Scans you perform will appear here.</div>
+        </div>
+      `;
+      document.getElementById('btnClearHistory').style.display = 'none';
+      return;
+    }
+
+    document.getElementById('btnClearHistory').style.display = 'block';
+
+    scanHistory.forEach(log => {
+      const gInfo = GRADES_INFO[log.grade] || { name: log.grade };
+      const card = document.createElement('div');
+      card.className = 'hist-item';
+      
+      let badgeColor = 'c5 bg5';
+      if (log.grade === 'A4') badgeColor = 'c4 bg4';
+      if (log.grade === 'A3') badgeColor = 'c3 bg3';
+      if (log.grade === 'A2') badgeColor = 'c2 bg2';
+      if (log.grade === 'A1') badgeColor = 'c1 bg1';
+
+      const sLabel = log.status === 'coded' ? '🔐 Coded' : '📦 NC';
+
+      card.innerHTML = `
+        <div class="hist-gr ${badgeColor}">${gInfo.name}</div>
+        <div class="hist-main">
+          <div class="hist-code" style="display:flex; align-items:center; gap:5px">
+            ${log.code}
+            <span style="font-size:7px; background:rgba(255,255,255,0.06); padding:1px 3px; border-radius:2px">${sLabel}</span>
+          </div>
+          <div class="hist-meta">${log.type} • ${log.size} • ${log.maker}</div>
+        </div>
+        <div class="hist-right">
+          <div class="hist-price" style="color:var(--g5)">₱${log.priceCoded}</div>
+          <div class="hist-meta" style="color:var(--g2); margin-top:2px">NC ₱${log.priceNonCode}</div>
+          <div class="hist-time">${log.timestamp.split(' ')[1] || log.timestamp}</div>
+        </div>
+      `;
+      card.onclick = () => {
+        goTab('scan');
+        document.getElementById('CI').value = log.code;
+        checkChip();
+      };
+      container.appendChild(card);
+    });
+  } catch (err) {
+    showToast("Error retrieving history logs.", true);
+  }
+}
+
+async function clearMyHistory() {
+  if (confirm("Are you sure you want to clear your local scan history logs? This action is permanent!")) {
+    try {
+      const res = await fetch('/api/history/clear/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+          username: currentUser.username,
+          role: currentUser.role
+        })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        showToast("✓ History successfully cleared.");
+        renderHistory();
+      }
+    } catch (err) {
+      showToast("Clear logs request failed.", true);
+    }
+  }
+}
+
+// ═══ INTERACTIVE CAPACITY-BASED ACCORDIONS ═══
+function renderCapacityAccordions() {
+  const container = document.getElementById('gradesAccordions');
+  container.innerHTML = '';
+
+  const capacities = ['8GB', '16GB', '32GB', '64GB', '128GB', '256GB', '512GB'];
+
+  capacities.forEach((cap, idx) => {
+    const chips = localDatabase.filter(x => x.size.toUpperCase() === cap);
+    const count = chips.length;
+
+    const accBtn = document.createElement('button');
+    accBtn.className = 'acc-btn';
+    accBtn.innerHTML = `
+      <span>📦 Reference Category: ${cap}</span>
+      <span class="acc-tag">${count} Entries</span>
+    `;
+
+    const accPan = document.createElement('div');
+    accPan.className = 'acc-pan';
+
+    if (count === 0) {
+      accPan.innerHTML = `<div style="padding:10px 16px; font-size:10px; color:var(--t3); font-family:monospace">No chips registered under this storage.</div>`;
+    } else {
+      chips.forEach(chip => {
+        const item = document.createElement('div');
+        item.className = 'mitem';
+        item.style.border = 'none';
+        item.style.borderRadius = '0';
+        item.style.borderBottom = '1px solid var(--bd)';
+        
+        let badgeColor = 'c5 bg5';
+        if (chip.grade === 'A4') badgeColor = 'c4 bg4';
+        if (chip.grade === 'A3') badgeColor = 'c3 bg3';
+        if (chip.grade === 'A2') badgeColor = 'c2 bg2';
+        if (chip.grade === 'A1') badgeColor = 'c1 bg1';
+
+        const sLabel = chip.status === 'coded' ? '🔐 Coded' : '📦 Non-Coded';
+
+        item.innerHTML = `
+          <div class="mitem-code">${chip.code}</div>
+          <div class="grc2">
+            <div class="mitem-info">${chip.type} • ${chip.maker}</div>
+            <div class="mitem-info" style="font-size:8px; display:flex; gap:5px">
+              <span>${sLabel}</span>
+              ${chip.note ? `<span>• ${chip.note}</span>` : ''}
+            </div>
+          </div>
+          <span class="mitem-gr ${badgeColor}">${chip.grade}</span>
+        `;
+        accPan.appendChild(item);
+      });
+    }
+
+    accBtn.onclick = function() {
+      this.classList.toggle('a');
+      accPan.classList.toggle('a');
+    };
+
+    container.appendChild(accBtn);
+    container.appendChild(accPan);
+  });
+}
+
+// ═══ REFERENCE DATABASE BROWSER ═══
+
+function setRefFilter(filter, btn) {
+  activeRefFilter = filter;
+  document.querySelectorAll('.ref-filter-btn').forEach(b => b.classList.remove('a'));
+  btn.classList.add('a');
+  renderRefDatabase();
+}
+
+function renderRefDatabase() {
+  const container = document.getElementById('refDatabaseList');
+  const countEl = document.getElementById('refDbCount');
+  const searchVal = (document.getElementById('refSearchInput')?.value || '').trim().toUpperCase();
+
+  let chips = [...localDatabase];
+
+  // Apply filter
+  if (activeRefFilter === 'coded') chips = chips.filter(c => c.status === 'coded');
+  else if (activeRefFilter === 'noncode') chips = chips.filter(c => c.status === 'noncode');
+  else if (['8GB','16GB','32GB','64GB','128GB','256GB','512GB'].includes(activeRefFilter)) {
+    chips = chips.filter(c => c.size === activeRefFilter);
+  } else if (['Samsung','SK Hynix','Toshiba','Kioxia'].includes(activeRefFilter)) {
+    chips = chips.filter(c => c.maker === activeRefFilter);
+  }
+
+  // Apply search
+  if (searchVal) {
+    chips = chips.filter(c =>
+      c.code.toUpperCase().includes(searchVal) ||
+      (c.maker && c.maker.toUpperCase().includes(searchVal)) ||
+      (c.type && c.type.toUpperCase().includes(searchVal)) ||
+      (c.size && c.size.toUpperCase().includes(searchVal)) ||
+      (c.alias && c.alias.toUpperCase().includes(searchVal)) ||
+      (c.alternate_codes && c.alternate_codes.toUpperCase().includes(searchVal)) ||
+      (c.ocr_text && c.ocr_text.toUpperCase().includes(searchVal))
+    );
+  }
+
+  countEl.textContent = `${chips.length} chip${chips.length !== 1 ? 's' : ''}`;
+  container.innerHTML = '';
+
+  if (chips.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-ico">🔍</div><div class="empty-txt">No chips match this filter.<br>Try a different search or filter.</div></div>`;
+    return;
+  }
+
+  chips.forEach(chip => {
+    const gInfo = GRADES_INFO[chip.grade] || { name: chip.grade };
+    let gc = 'c5 bg5';
+    if (chip.grade === 'A4') gc = 'c4 bg4';
+    if (chip.grade === 'A3') gc = 'c3 bg3';
+    if (chip.grade === 'A2') gc = 'c2 bg2';
+    if (chip.grade === 'A1') gc = 'c1 bg1';
+
+    const sLabel = chip.status === 'coded' ? '🔐 Coded' : '📦 Non-Coded';
+    const sBg = chip.status === 'coded' ? 'background:var(--g5b);color:var(--g5);border:1px solid var(--g5d)' : 'background:var(--g2b);color:var(--g2);border:1px solid var(--g2d)';
+    const codedPrice = localPricesCoded[chip.grade] || 0;
+    const isManual = chip.is_manual ? '<span class="ref-db-badge" style="background:var(--adb);color:var(--ad);border:1px solid rgba(255,107,189,.3)">CUSTOM</span>' : '';
+
+    const item = document.createElement('div');
+    item.className = 'ref-db-item';
+    item.innerHTML = `
+      <div class="ref-db-code">
+        <div class="ref-db-code-txt">${chip.code}</div>
+        <div class="ref-db-meta">${chip.type} &bull; ${chip.size} &bull; ${chip.maker}</div>
+        <div class="ref-db-badges">
+          <span class="ref-db-badge" style="${sBg}">${sLabel}</span>
+          ${chip.alias ? `<span class="ref-db-badge" style="background:var(--g3b);color:var(--g3);border:1px solid var(--g3d)">ALIAS: ${chip.alias}</span>` : ''}
+          ${chip.alternate_codes ? `<span class="ref-db-badge" style="background:var(--g4b);color:var(--g4);border:1px solid var(--g4d)">ALT: ${chip.alternate_codes}</span>` : ''}
+          ${chip.note ? `<span class="ref-db-badge" style="background:var(--s3);color:var(--t2);border:1px solid var(--bd)">${chip.note.substring(0,28)}${chip.note.length>28?'…':''}</span>` : ''}
+          ${isManual}
+        </div>
+      </div>
+      <div class="ref-db-right">
+        <span class="ref-db-grade ${gc}">${gInfo.name}</span>
+        <span class="ref-db-price">&#8369;${codedPrice}</span>
+      </div>
+    `;
+    item.onclick = () => {
+      goTab('scan');
+      document.getElementById('CI').value = chip.code;
+      checkChip();
+    };
+    container.appendChild(item);
+  });
+}
+
+// ═══ REFERENCE OCR CHART UPLOAD (now lives in ADD tab) ═══
+function handleRefUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const rp = document.getElementById('rp');
+  const lbl = document.getElementById('refUploadLbl');
+  const loader = document.getElementById('aiOverlay');
+  const msg = document.getElementById('aiMsg');
+
+  loader.classList.add('s');
+  msg.innerHTML = `📚 <b>LOADING IMAGE</b>: Preparing reference chart...`;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    rp.src = e.target.result;
+    rp.style.display = 'block';
+    lbl.style.display = 'none';
+
+    const img = new Image();
+    img.onload = function() {
+
+      // ── STEP 1: SCALE UP (biggest accuracy boost for Tesseract) ──────────
+      // Tesseract needs text to be at least 20-30px tall to read accurately.
+      // Phone photos of printed charts are often under-resolved for OCR.
+      // Scale so the longer dimension is at least 2500px.
+      const TARGET_PX = 2500;
+      const maxDim = Math.max(img.width, img.height);
+      const scale = maxDim < TARGET_PX ? Math.min(3, TARGET_PX / maxDim) : 1;
+      const W = Math.round(img.width  * scale);
+      const H = Math.round(img.height * scale);
+
+      // Create padded canvas (adds white breathing space around cropped/tight edges)
+      const padding = 50;
+      const canvas = document.createElement('canvas');
+      canvas.width = W + padding * 2;
+      canvas.height = H + padding * 2;
+      
+      const ctx = canvas.getContext('2d');
+      // Fill canvas background with solid white
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, padding, padding, W, H);
+
+      msg.innerHTML = `🔬 <b>PREPROCESSING</b>: Enhancing image quality for OCR...`;
+
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const d = imgData.data;
+      const W_padded = canvas.width;
+      const H_padded = canvas.height;
+      const total = W_padded * H_padded;
+
+      // ── STEP 2: WEIGHTED GRAYSCALE ───────────────────────────────────────
+      const gray = new Float32Array(total);
+      for (let i = 0, p = 0; i < d.length; i += 4, p++) {
+        gray[p] = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+      }
+
+      // ── STEP 3: HISTOGRAM STRETCH (contrast normalization) ───────────────
+      // Expand the actual pixel range to full 0-255.
+      // This fixes dark/underexposed or washed-out photos.
+      let lo = 255, hi = 0;
+      for (let p = 0; p < total; p++) {
+        if (gray[p] < lo) lo = gray[p];
+        if (gray[p] > hi) hi = gray[p];
+      }
+      const rng = hi - lo || 1;
+      for (let p = 0; p < total; p++) {
+        gray[p] = ((gray[p] - lo) / rng) * 255;
+      }
+
+      // ── STEP 4: FAST ADAPTIVE THRESHOLD (integral image method) ─────────
+      // Unlike a global threshold (avg > 128), this uses a local neighbourhood
+      // mean, so it handles shadows, lighting gradients, and dark backgrounds.
+      // Block radius = ~2% of the shorter image dimension.
+      const R = Math.max(8, Math.round(Math.min(W_padded, H_padded) * 0.02)) | 0;
+      const C = 12; // subtract from local mean — higher = more text kept
+
+      // Build integral image for O(1) mean queries
+      const intg = new Float64Array((W_padded + 1) * (H_padded + 1));
+      for (let y = 1; y <= H_padded; y++) {
+        for (let x = 1; x <= W_padded; x++) {
+          intg[y * (W_padded + 1) + x] =
+            gray[(y - 1) * W_padded + (x - 1)]
+            + intg[(y - 1) * (W_padded + 1) + x]
+            + intg[y * (W_padded + 1) + (x - 1)]
+            - intg[(y - 1) * (W_padded + 1) + (x - 1)];
+        }
+      }
+
+      const bin = new Uint8ClampedArray(total);
+      for (let y = 0; y < H_padded; y++) {
+        const y1 = Math.max(0, y - R), y2 = Math.min(H_padded - 1, y + R);
+        for (let x = 0; x < W_padded; x++) {
+          const x1 = Math.max(0, x - R), x2 = Math.min(W_padded - 1, x + R);
+          const area = (y2 - y1 + 1) * (x2 - x1 + 1);
+          const sum = intg[(y2 + 1) * (W_padded + 1) + (x2 + 1)]
+                    - intg[(y1)     * (W_padded + 1) + (x2 + 1)]
+                    - intg[(y2 + 1) * (W_padded + 1) + (x1)]
+                    + intg[(y1)     * (W_padded + 1) + (x1)];
+          const localMean = sum / area;
+          // Pixel is "dark" (text) if below local mean minus constant
+          bin[y * W_padded + x] = gray[y * W_padded + x] < localMean - C ? 0 : 255;
+        }
+      }
+
+      // ── STEP 5: WRITE PROCESSED IMAGE BACK ──────────────────────────────
+      for (let i = 0, p = 0; i < d.length; i += 4, p++) {
+        d[i] = bin[p]; d[i + 1] = bin[p]; d[i + 2] = bin[p]; d[i + 3] = 255;
+      }
+      ctx.putImageData(imgData, 0, 0);
+
+      // ── STEP 6: TESSERACT WITH OPTIMIZED CONFIG ──────────────────────────
+      if (window.Tesseract) {
+        msg.innerHTML = `🤖 <b>OCR SCANNING</b>: Reading codes (may take 15-30s)...`;
+
+        Tesseract.recognize(canvas, 'eng', {
+          logger: m => {
+            if (m.status === 'recognizing text') {
+              const pct = Math.round((m.progress || 0) * 100);
+              msg.innerHTML = `🤖 <b>OCR PROGRESS</b>: ${pct}% — extracting codes...`;
+            }
+          },
+          // Only accept characters that appear in real chip codes
+          tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-',
+          // PSM 6: Assume uniform block of text (best for printed tables/charts)
+          tessedit_pageseg_mode: '6',
+        }).then(({ data: { text } }) => {
+          loader.classList.remove('s');
+          extractRealOcrResults(text);
+        }).catch(() => {
+          loader.classList.remove('s');
+          showToast('OCR scan failed. Try a clearer, well-lit photo.', true);
+        });
+      } else {
+        loader.classList.remove('s');
+        showToast('OCR engine not loaded yet. Refresh and try again.', true);
+      }
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+
+function resetRefUpload() {
+  document.getElementById('rp').style.display = 'none';
+  document.getElementById('refUploadLbl').style.display = 'block';
+  document.getElementById('refResultsContainer').classList.remove('s');
+  document.getElementById('refItemsList').innerHTML = '';
+  document.getElementById('refFoundCount').textContent = '0 Found';
+  document.getElementById('galleryInput').value = '';
+}
+
+// Real OCR result extractor — broad token scan, catches ALL chip code families
+function extractRealOcrResults(rawText) {
+  const resultsContainer = document.getElementById('refResultsContainer');
+  const itemsList = document.getElementById('refItemsList');
+  resultsContainer.classList.add('s');
+  itemsList.innerHTML = '';
+
+  // Noise words to ignore (headers, labels, common English words that appear in charts)
+  const NOISE_WORDS = new Set([
+    'CODE','EMCP','EMMC','SIZE','TYPE','GRADE','MAKER','NOTE','CODED',
+    'CHIP','NAND','FLASH','BOARD','MODEL','PART','REF','REFERENCE',
+    'FROM','WITH','THAT','HAVE','BEEN','DATA','SCAN','SYSTEM',
+    'STORAGE','MEMORY','PAGE','TABLE','LIST','SOURCE','CLEAR',
+    'UFS','LPDDR','PMIC','SSD','PCB','BITS','BYTE','SPEED',
+    'PRIMARY','BASED','OLDER','SHOWING','CONFIGS','ALSO','KEPT',
+    'SUPPORTING','ENLARGE','CONFIRMING','MAPPING','LISTS','SPEC',
+    '16GB','32GB','64GB','8GB','128GB','256GB','512GB',
+  ]);
+
+  const seen = new Set();
+  const extracted = [];
+
+  const STANDARD_GB_SIZES = new Set(['8', '16', '32', '64', '128', '256', '512']);
+
+  function isCapacityToken(word) {
+    const cleanWord = word.trim().toUpperCase();
+    
+    // Case 1: Pure number that is a standard GB size
+    if (/^\d+$/.test(cleanWord)) {
+      return STANDARD_GB_SIZES.has(cleanWord);
+    }
+    
+    // Case 2: Number followed by standard GB suffixes
+    if (/^\d+\s*(GB|G|MB|B|G8|GB8)$/.test(cleanWord)) {
+      return true;
+    }
+    
+    return false;
+  }
+
+  // Helper to normalize misread capacities
+  function normalizeOcrSize(rawSize) {
+    const clean = rawSize.toUpperCase().replace(/[^0-9GB]/g, '');
+    
+    // If it's a pure number, e.g. "32", return "32GB"
+    if (/^\d+$/.test(clean)) {
+      if (STANDARD_GB_SIZES.has(clean)) {
+        return clean + 'GB';
+      }
+    }
+    
+    if (clean.includes('512')) return '512GB';
+    if (clean.includes('256')) return '256GB';
+    if (clean.includes('128') || clean.includes('132')) return '128GB';
+    if (clean.includes('64')) return '64GB';
+    if (clean.includes('32')) return '32GB';
+    if (clean.includes('16')) return '16GB';
+    if (clean.includes('8')) return '8GB';
+    return null;
+  }
+
+  const lines = rawText.toUpperCase().split(/[\r\n]+/);
+
+  lines.forEach(lineStr => {
+    let detectedSize = null;
+    let sizeToken = null;
+
+    // Split line into words
+    const words = lineStr.split(/[\s\t|]+/).map(w => w.trim()).filter(w => w.length > 0);
+    
+    // Look for capacity indicators first
+    words.forEach(word => {
+      if (isCapacityToken(word)) {
+        const norm = normalizeOcrSize(word);
+        if (norm) {
+          detectedSize = norm;
+          sizeToken = word;
+        }
+      }
+    });
+
+    // Identify chip code candidates in this line
+    words.forEach(word => {
+      // Skip capacity tokens
+      if (word === sizeToken) return;
+
+      // Skip noise words
+      if (NOISE_WORDS.has(word)) return;
+
+      // Skip if it looks like a capacity indicator
+      if (/[0-9]+\s*(G|GB|MB|TB|B|G8|GB8)/i.test(word)) return;
+
+      // Skip pure numbers or pure letters
+      if (/^\d+$/.test(word)) return;
+      if (/^[A-Z]+$/.test(word)) return;
+
+      // Must contain both letters and digits
+      if (!/[A-Z]/.test(word) || !/[0-9]/.test(word)) return;
+
+      // Length constraints
+      if (word.length < 4 || word.length > 22) return;
+
+      const clean = word.replace(/[^A-Z0-9\-]/g, '');
+      if (clean.length < 4) return;
+
+      if (seen.has(clean)) return;
+      seen.add(clean);
+
+      // Auto-infer metadata from known prefix families
+      let grade = 'A2', type = 'eMMC 5.1', maker = 'Samsung', size = detectedSize || '16GB', status = 'coded';
+      
+      if      (clean.startsWith('KM8'))  { grade='A5'; type='UFS 3.1'; if (!detectedSize) size='128GB'; }
+      else if (clean.startsWith('H9HQ')) { grade='A5'; type='UFS 3.1'; maker='SK Hynix'; if (!detectedSize) size='128GB'; }
+      else if (clean.startsWith('KM5') || clean.startsWith('KM3')) { grade='A4'; type='UFS 2.1'; if (!detectedSize) size='64GB'; }
+      else if (clean.startsWith('KM2')) { grade='A4'; type='UFS 2.0'; if (!detectedSize) size='32GB'; }
+      else if (clean.startsWith('H9TQ') || clean.startsWith('H9TP')) { maker='SK Hynix'; if (!detectedSize) size='32GB'; }
+      else if (clean.startsWith('H9HP')) { type='eMMC 5.0'; maker='SK Hynix'; }
+      else if (clean.startsWith('TYRO') || clean.startsWith('TYR')) { grade='A3'; maker='Toshiba'; if (!detectedSize) size='32GB'; }
+      else if (clean.startsWith('TYD') || clean.startsWith('TYDO')) { type='eMMC 5.0'; maker='Toshiba'; }
+      else if (clean.startsWith('TYE') || clean.startsWith('TYEO')) { grade='A1'; type='eMMC 4.5'; maker='Kioxia'; }
+      else if (clean.startsWith('KMR') || clean.startsWith('KMRX') || clean.startsWith('KMR4')) { grade='A3'; if (!detectedSize) size='32GB'; }
+      else if (clean.startsWith('KMQ4') || clean.startsWith('KMQX') || clean.startsWith('KMQD') || clean.startsWith('KMQ2')) { grade='A3'; if (!detectedSize) size='32GB'; }
+      else if (clean.startsWith('KMQ') || clean.startsWith('KMQE') || clean.startsWith('KMK') || clean.startsWith('KMF') || clean.startsWith('KMFE')) { /* defaults */ }
+      else if (clean.startsWith('KMG') || clean.startsWith('KMGX') || clean.startsWith('KMGD')) { if (!detectedSize) size='32GB'; }
+      else if (clean.startsWith('KMW') || clean.startsWith('KMWC') || clean.startsWith('KMWX')) { if (!detectedSize) size='32GB'; }
+      else if (clean.startsWith('KMDH') || clean.startsWith('KMDX') || clean.startsWith('KMDD') || clean.startsWith('KMMD')) { grade='A1'; type='eMMC 4.5'; if (!detectedSize) size='8GB'; }
+      else if (clean.startsWith('SDAD') || clean.startsWith('SDADF')) { maker='Sandisk'; }
+
+      const inDb = localDatabase.some(x => x.code.toUpperCase() === clean);
+      extracted.push({ code: clean, grade, type, maker, size, status, inDb });
+    });
+  });
+
+  // New codes first, already-in-DB chips at the bottom
+  extracted.sort((a, b) => (a.inDb ? 1 : 0) - (b.inDb ? 1 : 0));
+
+  document.getElementById('refFoundCount').textContent = `${extracted.length} Extracted`;
+
+
+
+  if (extracted.length === 0) {
+    itemsList.innerHTML = `<div class="empty-state" style="padding:20px"><div class="empty-ico">🔍</div><div class="empty-txt">No chip codes detected in image.<br>Try a clearer photo with better lighting.</div></div>`;
+    showToast('No chip codes found in image. Try a clearer photo.', true);
+    return;
+  }
+
+  extracted.forEach((item, index) => {
+    const row = document.createElement('div');
+    row.className = 'ref-item';
+    row.style.padding = '8px 10px';
+    row.style.flexDirection = 'column';
+    row.style.alignItems = 'stretch';
+    row.style.gap = '5px';
+
+    const checkId = `ref_chk_${index}`;
+    const selectId = `ref_sel_${index}`;
+    const codeInputId = `ref_code_${index}`;
+    const gradeId = `ref_gr_${index}`;
+    const sizeId = `ref_sz_${index}`;
+    const inDbNote = item.inDb ? `<span style="font-size:8px;color:var(--g5);font-family:monospace">✓ in DB</span>` : '';
+
+    row.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px">
+        <input type="checkbox" id="${checkId}" ${item.inDb ? '' : 'checked'} style="accent-color:var(--g5);flex-shrink:0">
+        <input type="text" id="${codeInputId}" value="${item.code}"
+          style="background:var(--s2);border:1px solid var(--bd);border-radius:5px;padding:4px 7px;font-family:monospace;font-size:11px;color:var(--tx);flex:1;outline:none;min-width:0">
+        ${inDbNote}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;padding-left:24px">
+        <select id="${gradeId}" class="ms" style="padding:4px 6px;font-size:9px;border-radius:5px">
+          <option value="A5" ${item.grade==='A5'?'selected':''}>A5 (A++++)</option>
+          <option value="A4" ${item.grade==='A4'?'selected':''}>A4 (A+++)</option>
+          <option value="A3" ${item.grade==='A3'?'selected':''}>A3 (A++)</option>
+          <option value="A2" ${item.grade==='A2'?'selected':''}>A2 (A+)</option>
+          <option value="A1" ${item.grade==='A1'?'selected':''}>A1 (A-)</option>
+        </select>
+        <select id="${sizeId}" class="ms" style="padding:4px 6px;font-size:9px;border-radius:5px">
+          <option ${item.size==='8GB'?'selected':''}>8GB</option>
+          <option ${item.size==='16GB'?'selected':''}>16GB</option>
+          <option ${item.size==='32GB'?'selected':''}>32GB</option>
+          <option ${item.size==='64GB'?'selected':''}>64GB</option>
+          <option ${item.size==='128GB'?'selected':''}>128GB</option>
+          <option ${item.size==='256GB'?'selected':''}>256GB</option>
+          <option ${item.size==='512GB'?'selected':''}>512GB</option>
+        </select>
+        <select id="${selectId}" class="ms" style="padding:4px 6px;font-size:9px;border-radius:5px">
+          <option value="coded" ${item.status==='coded'?'selected':''}>🔐 Coded</option>
+          <option value="noncode" ${item.status==='noncode'?'selected':''}>📦 Non-Code</option>
+        </select>
+      </div>
+      <div style="padding-left:24px;font-size:8px;color:var(--t3);font-family:monospace">${item.type} &bull; ${item.maker}</div>
+    `;
+    itemsList.appendChild(row);
+  });
+
+  showToast(`✓ OCR complete! ${extracted.length} chip codes found. Review and save.`);
+}
+
+async function addAllExtractedToDatabase() {
+  const itemsList = document.getElementById('refItemsList');
+  const rows = itemsList.querySelectorAll('.ref-item');
+  let addedCount = 0;
+  let skippedCount = 0;
+
+  try {
+    for (let index = 0; index < rows.length; index++) {
+      const row = rows[index];
+      const checkbox = row.querySelector('input[type="checkbox"]');
+      if (!checkbox || !checkbox.checked) continue;
+
+      const codeInput = row.querySelector('input[type="text"]');
+      const gradeSelect = row.querySelector('select[id^="ref_gr_"]');
+      const sizeSelect = row.querySelector('select[id^="ref_sz_"]');
+      const statusSelect = row.querySelector('select[id^="ref_sel_"]');
+
+      if (!codeInput) continue;
+      const code = codeInput.value.trim().toUpperCase();
+      if (!code || localDatabase.some(x => x.code.toUpperCase() === code)) {
+        skippedCount++;
+        continue;
+      }
+
+      const grade = gradeSelect ? gradeSelect.value : 'A2';
+      const size = sizeSelect ? sizeSelect.value : '16GB';
+      const status = statusSelect ? statusSelect.value : 'coded';
+
+      // Infer type and maker from grade/prefix
+      let type = 'eMMC 5.1', maker = 'Samsung';
+      if (code.startsWith('KM8') || code.startsWith('H9HQ')) { type='UFS 3.1'; maker=code.startsWith('KM8')?'Samsung':'SK Hynix'; }
+      else if (code.startsWith('KM5') || code.startsWith('KM3') || code.startsWith('KM2')) { type='UFS 2.0'; }
+      else if (code.startsWith('H9TQ') || code.startsWith('H9HP')) { type='eMMC 5.1'; maker='SK Hynix'; }
+      else if (code.startsWith('TYD')) { type='eMMC 5.0'; maker='Toshiba'; }
+      else if (code.startsWith('TYE')) { type='eMMC 4.5'; maker='Kioxia'; }
+
+      const payload = { code, grade, size, type, maker, status, note: 'Saved from reference chart' };
+
+      const res = await fetch('/api/chips/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.success) addedCount++;
+      else skippedCount++;
+    }
+
+    await initStorage();
+    let msg = `✓ Saved ${addedCount} chip${addedCount!==1?'s':''} to database!`;
+    if (skippedCount > 0) msg += ` (${skippedCount} skipped - already exists)`;
+    showToast(msg);
+    resetRefUpload();
+  } catch (err) {
+    showToast('Failed to save reference chips.', true);
+  }
+}
+
+// ═══ MANUAL ADD DATA MATRIX ═══
+async function addManualChip() {
+  const code = document.getElementById('mCode').value.trim().toUpperCase();
+  const grade = document.getElementById('mGrade').value;
+  const storage = document.getElementById('mStorage').value;
+  const type = document.getElementById('mType').value.trim() || 'eMMC 5.1';
+  const maker = document.getElementById('mMaker').value.trim() || 'Samsung';
+  const notes = document.getElementById('mNotes').value.trim() || 'Custom technician entry';
+  const alias = document.getElementById('mAlias').value.trim();
+  const alternateCodes = document.getElementById('mAlternateCodes').value.trim();
+
+  if (!code) {
+    showToast("Please enter a valid chip code model.", true);
+    return;
+  }
+
+  const payload = {
+    code: code,
+    grade: grade,
+    size: storage,
+    type: type,
+    maker: maker,
+    status: selectedManualStatus, // Persists required classification status
+    note: notes,
+    alias: alias,
+    alternate_codes: alternateCodes
+  };
+
+  try {
+    const res = await fetch('/api/chips/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('mCode').value = '';
+      document.getElementById('mType').value = '';
+      document.getElementById('mMaker').value = '';
+      document.getElementById('mNotes').value = '';
+      document.getElementById('mAlias').value = '';
+      document.getElementById('mAlternateCodes').value = '';
+
+      showToast(`✓ Chip successfully added to Database: ${code}`);
+      await initStorage();
+    } else {
+      showToast(data.message, true);
+    }
+  } catch (err) {
+    showToast("Server write error.", true);
+  }
+}
+
+function updateManualAddedList() {
+  const container = document.getElementById('manualListContainer');
+  container.innerHTML = '';
+
+  const manuals = localDatabase.filter(x => x.is_manual);
+
+  if (manuals.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-txt">No custom added chips. Complete the form above to add unlisted chips.</div></div>`;
+    return;
+  }
+
+  manuals.forEach(item => {
+    const gInfo = GRADES_INFO[item.grade] || { name: item.grade };
+    const row = document.createElement('div');
+    row.className = 'mitem';
+    
+    let badgeColor = 'c5 bg5';
+    if (item.grade === 'A4') badgeColor = 'c4 bg4';
+    if (item.grade === 'A3') badgeColor = 'c3 bg3';
+    if (item.grade === 'A2') badgeColor = 'c2 bg2';
+    if (item.grade === 'A1') badgeColor = 'c1 bg1';
+
+    const sLabel = item.status === 'coded' ? '🔐 Coded' : '📦 Non-Coded';
+    
+    let customBadgesHtml = '';
+    if (item.alias) {
+      customBadgesHtml += `<span style="font-size:7px; background:var(--g3b); color:var(--g3); padding:1px 4px; border-radius:3px">ALIAS: ${item.alias}</span>`;
+    }
+    if (item.alternate_codes) {
+      customBadgesHtml += `<span style="font-size:7px; background:var(--g4b); color:var(--g4); padding:1px 4px; border-radius:3px">ALT: ${item.alternate_codes}</span>`;
+    }
+
+    row.innerHTML = `
+      <div class="mitem-code">${item.code}</div>
+      <div class="grc2">
+        <div class="mitem-info">${item.type} • ${item.size} • ${item.maker}</div>
+        <div class="mitem-info" style="font-size:8px; display:flex; flex-wrap:wrap; gap:5px; margin-top:3px">
+          <span>${sLabel}</span>
+          ${customBadgesHtml}
+          <span>• ${item.note}</span>
+        </div>
+      </div>
+      <span class="mitem-gr ${badgeColor}">${gInfo.name}</span>
+      <button class="mitem-del" onclick="deleteManualChip('${item.code}')">🗑️</button>
+    `;
+    container.appendChild(row);
+  });
+}
+
+async function deleteManualChip(code) {
+  if (confirm(`Are you sure you want to delete ${code} from database?`)) {
+    try {
+      const res = await fetch(`/api/chips/${code}/delete/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken')
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`✓ Deleted ${code} from custom database.`);
+        await initStorage();
+      }
+    } catch (err) {
+      showToast("Error deleting chip.", true);
+    }
+  }
+}
+
+// ═══ PRICES SETTINGS INPUTS ═══
+function switchPriceTab(tabName) {
+  activePriceTab = tabName;
+  const tabCoded = document.getElementById('pTabCoded');
+  const tabNonCode = document.getElementById('pTabNonCode');
+  const secCoded = document.getElementById('pSecCoded');
+  const secNonCode = document.getElementById('pSecNonCode');
+
+  if (tabName === 'coded') {
+    tabCoded.classList.add('a');
+    tabNonCode.classList.remove('a');
+    secCoded.classList.add('a');
+    secNonCode.classList.remove('a');
+  } else {
+    tabCoded.classList.remove('a');
+    tabNonCode.classList.add('a');
+    secCoded.classList.remove('a');
+    secNonCode.classList.add('a');
+  }
+}
+
+function renderPricesFields() {
+  const containerCoded = document.getElementById('pricesContainerCoded');
+  const containerNonCode = document.getElementById('pricesContainerNonCode');
+
+  containerCoded.innerHTML = '';
+  containerNonCode.innerHTML = '';
+
+  const grades = ['A5', 'A4', 'A3', 'A2', 'A1'];
+
+  grades.forEach(g => {
+    const gInfo = GRADES_INFO[g] || { name: g, tier: 'unknown' };
+    let badgeColor = 'c5 bg5';
+    if (g === 'A4') badgeColor = 'c4 bg4';
+    if (g === 'A3') badgeColor = 'c3 bg3';
+    if (g === 'A2') badgeColor = 'c2 bg2';
+    if (g === 'A1') badgeColor = 'c1 bg1';
+
+    const rowC = document.createElement('div');
+    rowC.className = 'per';
+    rowC.innerHTML = `
+      <div class="peg">
+        <div class="pegt ${badgeColor.split(' ')[0]}">${gInfo.name}</div>
+        <div class="peti">${g}</div>
+      </div>
+      <div class="pety">${gInfo.tier}</div>
+      <div class="piw">
+        <span class="pip">₱</span>
+        <input class="pii" type="number" id="prC_${g}" value="${localPricesCoded[g] || 0}">
+      </div>
+    `;
+    containerCoded.appendChild(rowC);
+
+    const rowNC = document.createElement('div');
+    rowNC.className = 'per';
+    rowNC.innerHTML = `
+      <div class="peg">
+        <div class="pegt ${badgeColor.split(' ')[0]}">${gInfo.name}</div>
+        <div class="peti">${g}</div>
+      </div>
+      <div class="pety">${gInfo.tier}</div>
+      <div class="piw">
+        <span class="pip">₱</span>
+        <input class="pii" type="number" id="prNC_${g}" value="${localPricesNonCode[g] || 0}">
+      </div>
+    `;
+    containerNonCode.appendChild(rowNC);
+  });
+}
+
+async function savePrices() {
+  const grades = ['A5', 'A4', 'A3', 'A2', 'A1'];
+  const codedPayload = {};
+  const nonCodePayload = {};
+
+  grades.forEach(g => {
+    codedPayload[g] = parseInt(document.getElementById(`prC_${g}`).value) || 0;
+    nonCodePayload[g] = parseInt(document.getElementById(`prNC_${g}`).value) || 0;
+  });
+
+  try {
+    const res = await fetch('/api/prices/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ coded: codedPayload, noncode: nonCodePayload })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      const txt = document.getElementById('pricesSavedTxt');
+      txt.style.display = 'block';
+      setTimeout(() => txt.style.display = 'none', 3000);
+      showToast("✓ Custom buy prices synchronized!");
+      await initStorage();
+    }
+  } catch (err) {
+    showToast("Error updating prices.", true);
+  }
+}
+
+// ═══ GRADES CARD SCHEMES ═══
+function renderGrades() {
+  const container = document.getElementById('gradesContainer');
+  container.innerHTML = '';
+
+  const list = ['A5', 'A4', 'A3', 'A2', 'A1'];
+
+  list.forEach(g => {
+    const gInfo = GRADES_INFO[g];
+    const row = document.createElement('div');
+    row.className = 'gri';
+
+    let badgeColor = 'c5 bg5';
+    if (g === 'A4') badgeColor = 'c4 bg4';
+    if (g === 'A3') badgeColor = 'c3 bg3';
+    if (g === 'A2') badgeColor = 'c2 bg2';
+    if (g === 'A1') badgeColor = 'c1 bg1';
+
+    row.innerHTML = `
+      <div class="grl">
+        <div class="grg ${badgeColor.split(' ')[0]}">${gInfo.name}</div>
+        <span class="grtb ${badgeColor}">${g}</span>
+      </div>
+      <div class="grc2">
+        <div class="grt">${gInfo.tier}</div>
+        <div class="grd">${gInfo.desc}</div>
+        <div class="grp">Prefix: ${gInfo.tags.join(', ')}</div>
+      </div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+// ═══ ADMIN PRIVILEGES CONTROL PANEL ═══
+async function updateAdminPanel() {
+  if (!currentUser || currentUser.role !== 'admin') return;
+
+  try {
+    // 1. Fetch system statistics
+    const statsRes = await fetch('/api/stats/');
+    const stats = await statsRes.json();
+
+    document.getElementById('statScans').textContent = stats.scans;
+    document.getElementById('statTechs').textContent = stats.techs;
+    
+    // Detailed dynamic classification breakdown in Stats dashboard
+    document.getElementById('statDbCoded').textContent = stats.coded_total;
+    document.getElementById('statDbNoncode').textContent = stats.noncode_total;
+
+    document.getElementById('statManual').textContent = stats.manual_total;
+
+    // 2. Fetch User accounts
+    const usersRes = await fetch('/api/users/');
+    const users = await usersRes.json();
+
+    const userContainer = document.getElementById('usersListContainer');
+    userContainer.innerHTML = '';
+    document.getElementById('userCountTxt').textContent = `${users.length} users`;
+
+    users.forEach(u => {
+      const row = document.createElement('div');
+      row.className = 'user-item';
+
+      const roleClass = u.role === 'admin' ? 'role-admin' : 'role-tech';
+      const initial = u.username.charAt(0).toUpperCase();
+      const canDelete = u.username !== 'admin';
+
+      row.innerHTML = `
+        <div class="user-av" style="background:var(--s2); border:1px solid var(--bd2)">${initial}</div>
+        <div class="user-main">
+          <div class="user-name">${u.username}</div>
+          <div class="user-meta">Password: ${u.password}</div>
+        </div>
+        <span class="user-role ${roleClass}">${u.role.toUpperCase()}</span>
+        ${canDelete ? `<button class="user-del" onclick="deleteUserAccount('${u.username}')">🗑️</button>` : ''}
+      `;
+      userContainer.appendChild(row);
+    });
+
+    // 3. Fetch Global Scan Logs (All users)
+    const logsRes = await fetch('/api/history/?role=admin');
+    const logs = await logsRes.json();
+
+    const globalLogsContainer = document.getElementById('globalLogsContainer');
+    globalLogsContainer.innerHTML = '';
+
+    if (logs.length === 0) {
+      globalLogsContainer.innerHTML = `<div class="empty-state"><div class="empty-txt">No scan records inside global log database.</div></div>`;
+      return;
+    }
+
+    logs.forEach(log => {
+      const badgeColor = log.grade === 'A5' ? 'c5' : log.grade === 'A4' ? 'c4' : log.grade === 'A3' ? 'c3' : log.grade === 'A2' ? 'c2' : 'c1';
+      const sLabel = log.status === 'coded' ? '🔐 Coded' : '📦 NC';
+      
+      const row = document.createElement('div');
+      row.className = 'ah-item';
+      row.innerHTML = `
+        <div class="ah-gr ${badgeColor}">${log.grade}</div>
+        <div class="ah-main">
+          <div class="ah-code" style="display:flex; align-items:center; gap:5px">
+            ${log.code}
+            <span style="font-size:7px; background:rgba(255,255,255,0.06); padding:1px 3px; border-radius:2px">${sLabel}</span>
+          </div>
+          <div class="ah-user">Tech: <b>${log.user}</b> • ${log.timestamp.split(' ')[0]}</div>
+        </div>
+        <div class="ah-price">₱${log.priceCoded}</div>
+      `;
+      globalLogsContainer.appendChild(row);
+    });
+
+  } catch (err) {
+    showToast("Error updating Admin metrics.", true);
+  }
+}
+
+async function createNewUser() {
+  const u = document.getElementById('auName').value.trim();
+  const p = document.getElementById('auPass').value.trim();
+  const r = document.getElementById('auRole').value;
+
+  if (!u || !p) {
+    showToast("Error: Username and Password fields cannot be empty.", true);
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/users/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ username: u, password: p, role: r })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('auName').value = '';
+      document.getElementById('auPass').value = '';
+      showToast(`✓ Successfully registered account: ${u}`);
+      updateAdminPanel();
+    } else {
+      showToast(data.message, true);
+    }
+  } catch (err) {
+    showToast("Server account creation error.", true);
+  }
+}
+
+async function deleteUserAccount(username) {
+  if (confirm(`Are you sure you want to permanently delete technician user: ${username}?`)) {
+    try {
+      const res = await fetch(`/api/users/${username}/delete/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken')
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`✓ Removed account: ${username}`);
+        updateAdminPanel();
+      }
+    } catch (err) {
+      showToast("Error removing user account.", true);
+    }
+  }
+}
+
+async function clearGlobalScans() {
+  if (confirm("🚨 DANGER: Are you sure you want to reset all log scan history across ALL users? This cannot be undone!")) {
+    try {
+      const res = await fetch('/api/history/clear/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ role: 'admin' })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast("✓ All scan history logs purged successfully.");
+        updateAdminPanel();
+      }
+    } catch (err) {
+      showToast("Global logs reset failed.", true);
+    }
+  }
+}
+
+async function exportDatabaseJSON() {
+  try {
+    const resChips = await fetch('/api/chips/');
+    const chips = await resChips.json();
+    const resPrices = await fetch('/api/prices/');
+    const prices = await resPrices.json();
+    const resUsers = await fetch('/api/users/');
+    const users = await resUsers.json();
+    
+    const backup = {
+      chipsDB: chips,
+      prices: prices,
+      users: users,
+      timestamp: new Date().toLocaleString()
+    };
+
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
+    const dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", `chipscan_django_backup_${Date.now()}.json`);
+    dlAnchorElem.click();
+    showToast("✓ Database backup file downloaded successfully.");
+  } catch (err) {
+    showToast("Database export failed.", true);
+  }
+}
+
+// ═══ TOAST & UTILITIES ═══
+function showToast(message, isError = false) {
+  const toast = document.getElementById('systemToast');
+  toast.textContent = message;
+  
+  if (isError) {
+    toast.classList.add('err');
+  } else {
+    toast.classList.remove('err');
+  }
+
+  toast.style.display = 'block';
+  toast.style.animation = 'su 0.2s ease';
+  
+  setTimeout(() => {
+    toast.style.display = 'none';
+  }, 3500);
+}
+
+function copyResult() {
+  if (!currentCheckCode) return;
+  const found = localDatabase.find(x => x.code.toUpperCase() === currentCheckCode);
+  if (!found) return;
+
+  const gInfo = GRADES_INFO[found.grade] || { name: found.grade };
+  const valC = localPricesCoded[found.grade] || 0;
+  const valNC = localPricesNonCode[found.grade] || 0;
+
+  const sLabel = found.status === 'coded' ? 'Coded' : 'Non-Coded';
+
+  const text = `ChipScan PH Result\nCode: ${found.code}\nStatus: ${sLabel}\nGrade: ${gInfo.name} (${found.grade})\nType: ${found.type}\nStorage: ${found.size}\nMaker: ${found.maker}\nCoded Price: ₱${valC}\nNon-Code Price: ₱${valNC}`;
+  
+  navigator.clipboard.writeText(text).then(() => {
+    showToast("✓ Details successfully copied to clipboard.");
+  }).catch(() => {
+    showToast("Clipboard copy failed.", true);
+  });
+}
+
+// ═══ STATE VARIABLES FOR MANUAL CROP & ROTATION ADJUSTMENT ═══
+let cropImageObj = null;
+let cropRotation = 0;
+let cropTilt = 0;
+let cropBox = { x: 0.15, y: 0.15, w: 0.7, h: 0.7 }; // normalized crop rect (0.0 to 1.0)
+let activeCropDrag = null;
+let dragStartPos = { x: 0, y: 0 };
+let dragStartBox = { x: 0, y: 0, w: 0, h: 0 };
+
+function openCropModalWithLastImage() {
+  if (!window.lastUploadedCanvasImage) {
+    showToast("❌ No recently uploaded image found.", true);
+    return;
+  }
+  openCropModal(window.lastUploadedCanvasImage);
+}
+
+function openCropModal(img) {
+  cropImageObj = img;
+  cropRotation = 0;
+  cropTilt = 0;
+  cropBox = { x: 0.15, y: 0.15, w: 0.7, h: 0.7 };
+  
+  document.getElementById('cropTiltSlider').value = 0;
+  document.getElementById('cropTiltVal').textContent = 0;
+  
+  const modal = document.getElementById('cropRotateModal');
+  modal.classList.add('s');
+  
+  // Render canvas & register mouse/touch listeners (only once)
+  drawCropCanvas();
+  setTimeout(updateCropOverlayUI, 50); // slight delay so dimensions calculate correctly after fade-in
+  
+  if (!window.cropDragHandlersInitialized) {
+    initCropDragHandlers();
+    window.cropDragHandlersInitialized = true;
+  }
+}
+
+function closeCropModal() {
+  document.getElementById('cropRotateModal').classList.remove('s');
+}
+
+function rotateCropImage(amount) {
+  cropRotation = (cropRotation + amount) % 360;
+  if (cropRotation < 0) cropRotation += 360;
+  drawCropCanvas();
+  updateCropOverlayUI();
+}
+
+function onTiltSliderChange(val) {
+  cropTilt = parseInt(val) || 0;
+  document.getElementById('cropTiltVal').textContent = cropTilt;
+  drawCropCanvas();
+  updateCropOverlayUI();
+}
+
+function drawCropCanvas() {
+  if (!cropImageObj) return;
+  const canvas = document.getElementById('cropCanvas');
+  const ctx = canvas.getContext('2d');
+  
+  // Get rotated dimensions to avoid clipping
+  const rad = (cropTilt * Math.PI) / 180;
+  let w = cropImageObj.width;
+  let h = cropImageObj.height;
+  
+  if (cropRotation === 90 || cropRotation === 270) {
+    w = cropImageObj.height;
+    h = cropImageObj.width;
+  }
+  
+  // Calculate bounding box for fine tilt
+  const absCos = Math.abs(Math.cos(rad));
+  const absSin = Math.abs(Math.sin(rad));
+  const canvasW = Math.round(w * absCos + h * absSin);
+  const canvasH = Math.round(w * absSin + h * absCos);
+  
+  canvas.width = canvasW;
+  canvas.height = canvasH;
+  
+  ctx.clearRect(0, 0, canvasW, canvasH);
+  ctx.translate(canvasW / 2, canvasH / 2);
+  
+  // Apply rotation AND tilt together
+  const totalRad = (cropRotation * Math.PI) / 180 + rad;
+  ctx.rotate(totalRad);
+  ctx.drawImage(cropImageObj, -cropImageObj.width / 2, -cropImageObj.height / 2, cropImageObj.width, cropImageObj.height);
+  
+  // Reset context transform
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+}
+
+function updateCropOverlayUI() {
+  const canvas = document.getElementById('cropCanvas');
+  const overlay = document.getElementById('cropBoxOverlay');
+  const wrap = document.getElementById('cropPreviewWrap');
+  if (!canvas || !overlay || !wrap) return;
+  
+  const rect = canvas.getBoundingClientRect();
+  const wrapRect = wrap.getBoundingClientRect();
+  
+  // Calculate offset inside the preview container bounds
+  const offsetLeft = rect.left - wrapRect.left;
+  const offsetTop = rect.top - wrapRect.top;
+  
+  overlay.style.left = `${offsetLeft + cropBox.x * rect.width}px`;
+  overlay.style.top = `${offsetTop + cropBox.y * rect.height}px`;
+  overlay.style.width = `${cropBox.w * rect.width}px`;
+  overlay.style.height = `${cropBox.h * rect.height}px`;
+}
+
+// Draggable and Resizable overlays
+function initCropDragHandlers() {
+  const wrap = document.getElementById('cropPreviewWrap');
+  const overlay = document.getElementById('cropBoxOverlay');
+  
+  wrap.addEventListener('mousedown', startDrag);
+  wrap.addEventListener('touchstart', startDrag, { passive: false });
+  
+  window.addEventListener('mousemove', doDrag);
+  window.addEventListener('touchmove', doDrag, { passive: false });
+  
+  window.addEventListener('mouseup', endDrag);
+  window.addEventListener('touchend', endDrag);
+  
+  function startDrag(e) {
+    const target = e.target;
+    const handle = target.getAttribute('data-handle');
+    const isBox = target === overlay;
+    
+    if (!handle && !isBox) return;
+    
+    e.preventDefault();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    
+    activeCropDrag = handle || 'box';
+    dragStartPos = { x: clientX, y: clientY };
+    dragStartBox = { ...cropBox };
+  }
+  
+  function doDrag(e) {
+    if (!activeCropDrag) return;
+    e.preventDefault();
+    
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    
+    const canvas = document.getElementById('cropCanvas');
+    const rect = canvas.getBoundingClientRect();
+    
+    // Normalized deltas
+    const dx = (clientX - dragStartPos.x) / rect.width;
+    const dy = (clientY - dragStartPos.y) / rect.height;
+    
+    if (activeCropDrag === 'box') {
+      let newX = dragStartBox.x + dx;
+      let newY = dragStartBox.y + dy;
+      
+      newX = Math.max(0, Math.min(1 - dragStartBox.w, newX));
+      newY = Math.max(0, Math.min(1 - dragStartBox.h, newY));
+      
+      cropBox.x = newX;
+      cropBox.y = newY;
+    } else {
+      const minSize = 0.15;
+      if (activeCropDrag === 'tl') {
+        let newX = Math.max(0, Math.min(dragStartBox.x + dragStartBox.w - minSize, dragStartBox.x + dx));
+        let newY = Math.max(0, Math.min(dragStartBox.y + dragStartBox.h - minSize, dragStartBox.y + dy));
+        cropBox.w = dragStartBox.x + dragStartBox.w - newX;
+        cropBox.h = dragStartBox.y + dragStartBox.h - newY;
+        cropBox.x = newX;
+        cropBox.y = newY;
+      } else if (activeCropDrag === 'tr') {
+        let newY = Math.max(0, Math.min(dragStartBox.y + dragStartBox.h - minSize, dragStartBox.y + dy));
+        cropBox.w = Math.max(minSize, Math.min(1 - dragStartBox.x, dragStartBox.w + dx));
+        cropBox.h = dragStartBox.y + dragStartBox.h - newY;
+        cropBox.y = newY;
+      } else if (activeCropDrag === 'bl') {
+        let newX = Math.max(0, Math.min(dragStartBox.x + dragStartBox.w - minSize, dragStartBox.x + dx));
+        cropBox.w = dragStartBox.x + dragStartBox.w - newX;
+        cropBox.h = Math.max(minSize, Math.min(1 - dragStartBox.y, dragStartBox.h + dy));
+        cropBox.x = newX;
+      } else if (activeCropDrag === 'br') {
+        cropBox.w = Math.max(minSize, Math.min(1 - dragStartBox.x, dragStartBox.w + dx));
+        cropBox.h = Math.max(minSize, Math.min(1 - dragStartBox.y, dragStartBox.h + dy));
+      }
+    }
+    
+    updateCropOverlayUI();
+  }
+  
+  function endDrag() {
+    activeCropDrag = null;
+  }
+}
+
+// Window resizing adjustments for crop box positioning
+window.addEventListener('resize', () => {
+  if (document.getElementById('cropRotateModal').classList.contains('s')) {
+    updateCropOverlayUI();
+  }
+});
+
+function executeCroppedScan() {
+  const canvas = document.getElementById('cropCanvas');
+  const finalCanvas = document.createElement('canvas');
+  
+  const sourceX = Math.round(cropBox.x * canvas.width);
+  const sourceY = Math.round(cropBox.y * canvas.height);
+  const sourceW = Math.round(cropBox.w * canvas.width);
+  const sourceH = Math.round(cropBox.h * canvas.height);
+  
+  finalCanvas.width = sourceW;
+  finalCanvas.height = sourceH;
+  
+  const ctx = finalCanvas.getContext('2d');
+  ctx.drawImage(canvas, sourceX, sourceY, sourceW, sourceH, 0, 0, sourceW, sourceH);
+  
+  closeCropModal();
+  runOcrOnAdjustedCanvas(finalCanvas);
+}
+
+function runOcrOnAdjustedCanvas(canvas) {
+  const overlay = document.getElementById('aiOverlay');
+  const msg = document.getElementById('aiMsg');
+  overlay.classList.add('s');
+  msg.innerHTML = `🔬 <b>PREPROCESSING</b>: Optimizing custom layout...`;
+  
+  const preppedCanvas = document.createElement('canvas');
+  preprocessCanvasForOCR(canvas, preppedCanvas);
+  
+  if (window.Tesseract) {
+    msg.innerHTML = `🤖 <b>AI SCANNING</b>: Parsing aligned chipset markings...`;
+    Tesseract.recognize(preppedCanvas, 'eng').then(({ data: { text } }) => {
+      overlay.classList.remove('s');
+      processOcrResult(text, 0, []); // Scan single manually-cropped attempt, no extra background rotations
+    }).catch(() => {
+      overlay.classList.remove('s');
+      showToast("❌ OCR scan failed. Try a clearer or brighter alignment.", true);
+    });
+  } else {
+    setTimeout(() => {
+      overlay.classList.remove('s');
+      showToast("❌ OCR Engine not initialized yet.", true);
+    }, 1500);
+  }
+}
+</script>
+</body>
+</html>
