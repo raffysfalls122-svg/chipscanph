@@ -7370,11 +7370,10 @@
 
     function openScanLive() {
       const ov = document.getElementById('scanLive');
-      // reset state
       document.getElementById('slStepText').classList.add('on');
-      document.getElementById('slStepImg').classList.remove('on');
+      document.getElementById('slStepImg').classList.add('on');
       document.getElementById('slTextSpin').style.display = 'inline-block';
-      document.getElementById('slImgSpin').style.display = 'none';
+      document.getElementById('slImgSpin').style.display = 'inline-block';
       document.getElementById('slTextDetail').classList.remove('show');
       document.getElementById('slImgDetail').classList.remove('show');
       document.getElementById('slDivider').style.display = 'none';
@@ -7554,7 +7553,7 @@
 
       document.getElementById('spTextSpin').style.display = 'inline-block';
       document.getElementById('spTextResult').style.display = 'none';
-      document.getElementById('spImgSpin').style.display = 'none';
+      document.getElementById('spImgSpin').style.display = 'inline-block';
       document.getElementById('spImgResult').style.display = 'none';
       document.getElementById('spFinal').style.display = 'none';
 

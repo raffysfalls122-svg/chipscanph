@@ -544,6 +544,57 @@ def seed_database_if_empty():
         for size, price in default_noncode_prices_admin.items():
             NonCodePrice.objects.create(size=size, price=price, role='admin')
 
+    # 7. Seed standard default dataset of 28 chips if empty
+    from .models import Chip
+    if not Chip.objects.exists():
+        default_chips = [
+            # Samsung eMMC/UFS
+            {'code': 'KMDE60013M', 'grade': 'A1', 'size': '16GB', 'type': 'eMMC', 'maker': 'Samsung', 'status': 'coded', 'note': 'Preseeded Samsung eMMC'},
+            {'code': 'KMRX1000BM', 'grade': 'A1', 'size': '16GB', 'type': 'eMMC', 'maker': 'Samsung', 'status': 'coded', 'note': 'Preseeded Samsung eMMC'},
+            {'code': 'KMR21000BM', 'grade': 'A2', 'size': '32GB', 'type': 'eMCP', 'maker': 'Samsung', 'status': 'coded', 'note': 'Preseeded Samsung eMCP'},
+            {'code': 'KLMAG2WEPD', 'grade': 'A3', 'size': '64GB', 'type': 'UFS 2.1', 'maker': 'Samsung', 'status': 'coded', 'note': 'Preseeded Samsung UFS'},
+            {'code': 'KLMCG8GEAC', 'grade': 'A4', 'size': '128GB', 'type': 'UFS 3.0', 'maker': 'Samsung', 'status': 'coded', 'note': 'Preseeded Samsung UFS'},
+            {'code': 'KLMDG8JERB', 'grade': 'A5', 'size': '256GB', 'type': 'UFS 3.1', 'maker': 'Samsung', 'status': 'coded', 'note': 'Preseeded Samsung UFS'},
+            {'code': 'KMJ5U000WA', 'grade': 'A1', 'size': '16GB', 'type': 'eMMC', 'maker': 'Samsung', 'status': 'coded', 'note': 'Preseeded Samsung eMMC'},
+            {'code': 'KMK7X000VM', 'grade': 'A1', 'size': '8GB', 'type': 'eMMC', 'maker': 'Samsung', 'status': 'coded', 'note': 'Preseeded Samsung eMMC'},
+            {'code': 'KMFN60012M', 'grade': 'A2', 'size': '32GB', 'type': 'eMCP', 'maker': 'Samsung', 'status': 'coded', 'note': 'Preseeded Samsung eMCP'},
+            {'code': 'KMFX60012M', 'grade': 'A3', 'size': '64GB', 'type': 'eMCP', 'maker': 'Samsung', 'status': 'coded', 'note': 'Preseeded Samsung eMCP'},
+            {'code': 'KLM8G1GETF', 'grade': 'A1', 'size': '8GB', 'type': 'eMMC', 'maker': 'Samsung', 'status': 'coded', 'note': 'Preseeded Samsung eMMC'},
+            {'code': 'KLMCG4WEMB', 'grade': 'A3', 'size': '64GB', 'type': 'eMMC', 'maker': 'Samsung', 'status': 'coded', 'note': 'Preseeded Samsung eMMC'},
+            {'code': 'KLM8G1WEPD', 'grade': 'A1', 'size': '8GB', 'type': 'eMMC', 'maker': 'Samsung', 'status': 'coded', 'note': 'Preseeded Samsung eMMC'},
+            # SK Hynix
+            {'code': 'H9TQ17ABJTMC', 'grade': 'A1', 'size': '16GB', 'type': 'eMCP', 'maker': 'SK Hynix', 'status': 'coded', 'note': 'Preseeded SK Hynix eMCP'},
+            {'code': 'H9TQ64A8GTMC', 'grade': 'A2', 'size': '32GB', 'type': 'eMCP', 'maker': 'SK Hynix', 'status': 'coded', 'note': 'Preseeded SK Hynix eMCP'},
+            {'code': 'H9HQ15ACXXMC', 'grade': 'A3', 'size': '64GB', 'type': 'UFS 2.1', 'maker': 'SK Hynix', 'status': 'coded', 'note': 'Preseeded SK Hynix UFS'},
+            {'code': 'H9HP52ACPMMD', 'grade': 'A4', 'size': '128GB', 'type': 'UFS 3.1', 'maker': 'SK Hynix', 'status': 'coded', 'note': 'Preseeded SK Hynix UFS'},
+            {'code': 'H9TQ26ADFTMC', 'grade': 'A2', 'size': '32GB', 'type': 'eMCP', 'maker': 'SK Hynix', 'status': 'coded', 'note': 'Preseeded SK Hynix eMCP'},
+            # Toshiba / Kioxia
+            {'code': 'THGBM5G6A2JBAIR', 'grade': 'A1', 'size': '16GB', 'type': 'eMMC', 'maker': 'Toshiba', 'status': 'coded', 'note': 'Preseeded Toshiba eMMC'},
+            {'code': 'THGBMHG8C4LBAIR', 'grade': 'A2', 'size': '32GB', 'type': 'eMMC', 'maker': 'Toshiba', 'status': 'coded', 'note': 'Preseeded Toshiba eMMC'},
+            {'code': 'THGBMNG9C8LBAIG', 'grade': 'A3', 'size': '64GB', 'type': 'eMMC', 'maker': 'Toshiba', 'status': 'coded', 'note': 'Preseeded Toshiba eMMC'},
+            {'code': 'THGAF8T0T43BAIR', 'grade': 'A4', 'size': '128GB', 'type': 'UFS 2.1', 'maker': 'Toshiba', 'status': 'coded', 'note': 'Preseeded Toshiba UFS'},
+            {'code': 'THGAF9T1T83BAIR', 'grade': 'A5', 'size': '256GB', 'type': 'UFS 3.0', 'maker': 'Toshiba', 'status': 'coded', 'note': 'Preseeded Toshiba UFS'},
+            # SanDisk & Micron
+            {'code': 'SDINBDG4-16G', 'grade': 'A1', 'size': '16GB', 'type': 'eMMC', 'maker': 'SanDisk', 'status': 'coded', 'note': 'Preseeded SanDisk eMMC'},
+            {'code': 'SDINBDG4-32G', 'grade': 'A2', 'size': '32GB', 'type': 'eMMC', 'maker': 'SanDisk', 'status': 'coded', 'note': 'Preseeded SanDisk eMMC'},
+            {'code': 'SDINBDG4-64G', 'grade': 'A3', 'size': '64GB', 'type': 'eMMC', 'maker': 'SanDisk', 'status': 'coded', 'note': 'Preseeded SanDisk eMMC'},
+            {'code': 'MT29F64G08CBABA', 'grade': 'A1', 'size': '8GB', 'type': 'eMMC', 'maker': 'Micron', 'status': 'coded', 'note': 'Preseeded Micron eMMC'},
+            {'code': 'MT29F128G08CFABB', 'grade': 'A1', 'size': '16GB', 'type': 'eMMC', 'maker': 'Micron', 'status': 'coded', 'note': 'Preseeded Micron eMMC'},
+        ]
+        
+        for item in default_chips:
+            item['grade'] = GRADE_BY_SIZE.get(item['size'], item['grade'])
+            chip = Chip.objects.create(**item)
+            
+            # Auto-bind local reference photo for KMDE60013M
+            if chip.code == 'KMDE60013M':
+                ref_src = os.path.join(settings.MEDIA_ROOT, 'images', 'chips', 'KMDE60013M.jpg')
+                if os.path.exists(ref_src):
+                    try:
+                        save_chip_image(chip, image_path_src=ref_src)
+                    except Exception as err:
+                        print("Failed to auto-bind KMDE60013M reference image:", err)
+
     clear_scan_caches()
 
 
