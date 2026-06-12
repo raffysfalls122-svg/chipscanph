@@ -6711,9 +6711,13 @@
       }
 
       try {
-        // Simple, highly compatible constraints for laptop webcams
+        // High-definition constraints to ensure clear text detection on chips
         const constraints = {
-          video: true
+          video: {
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+            facingMode: { ideal: "environment" }
+          }
         };
 
         const stream = await navigator.mediaDevices.getUserMedia(constraints);

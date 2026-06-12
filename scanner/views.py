@@ -289,6 +289,17 @@ def preprocess_image_for_ocr(pil_img):
     """Preprocess image to remove noise, glare, screen moire, skew and enhance contrast
     so that both OCR and shape-based visual matching ignore color and lighting differences."""
     try:
+        # Scale up if the image is small to prevent details/text from being destroyed by downstream fixed-pixel filtering
+        w, h = pil_img.size
+        min_dim = 1600
+        if w < min_dim or h < min_dim:
+            scale = min_dim / min(w, h)
+            if scale > 4.0:
+                scale = 4.0
+            new_w = int(w * scale)
+            new_h = int(h * scale)
+            pil_img = pil_img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+
         # Convert PIL Image to OpenCV BGR, then Grayscale
         cv_img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
         gray = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
@@ -1105,7 +1116,7 @@ def api_scan_image(request):
             img = preprocess_image_for_ocr(img)
 
             # Max dimension limits to preserve server CPU while keeping markings legible
-            max_dim = 800
+            max_dim = 1600
             if img.width > max_dim or img.height > max_dim:
                 img.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
 
