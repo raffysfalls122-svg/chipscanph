@@ -3385,68 +3385,62 @@
           </div>
           <div class="price-cell">
             <div class="price-lbl">BUYING PRICE</div>
-            <div class="price-badge nb2">�      <!-- Non-Code Saving Flow -->
-      <div class="custom-modal" id="ncFlowCard" style="display:none">
-        <div class="custom-modal-card" style="max-width: 400px; width: 100%;">
-          <div class="custom-modal-header">
-            <div class="custom-modal-title">⚠️ Code Not in Database</div>
-            <span onclick="closeUnrecognizedDetailsModal()" style="cursor:pointer; color:var(--t2); font-weight:bold; font-size:22px; line-height: 1">&times;</span>
+            <div class="price-badge nb2">📦 Non-Code</div>
+            <div class="price-val" id="RPNC">—</div>
           </div>
-          <div class="custom-modal-body" style="padding: 16px 20px; overflow-y: auto; max-height: calc(100vh - 120px);">
-            
-            <div class="ml" style="margin-bottom:4px">SELECT GB CAPACITY:</div>
-            <div class="ptabs" style="margin-bottom:10px" id="ncGbSelector">
-              <button class="ptab" onclick="setNcGb('16GB', this)">16G</button>
-              <button class="ptab" onclick="setNcGb('32GB', this)">32G</button>
-              <button class="ptab" onclick="setNcGb('64GB', this)">64G</button>
-              <button class="ptab" onclick="setNcGb('128GB', this)">128G</button>
-              <button class="ptab" onclick="setNcGb('256GB', this)">256G</button>
-            </div>
+        </div>
 
-            <div class="ml" style="margin-bottom:4px">SELECT STORAGE TYPE:</div>
-            <div class="ptabs" style="margin-bottom:10px" id="ncTypeSelector">
-              <button class="ptab" onclick="setNcType('eMMC', this)">eMMC</button>
-              <button class="ptab" onclick="setNcType('eMCP', this)">eMCP</button>
+        <!-- Non-Code Saving Flow -->
+        <div class="custom-modal" id="ncFlowCard" style="display:none">
+          <div class="custom-modal-card" style="max-width: 400px; width: 100%;">
+            <div class="custom-modal-header">
+              <div class="custom-modal-title">⚠️ Code Not in Database</div>
+              <span onclick="closeUnrecognizedDetailsModal()" style="cursor:pointer; color:var(--t2); font-weight:bold; font-size:22px; line-height: 1">&times;</span>
             </div>
-
-            <!-- Reference photo upload area inside shortcut flow (FIX 5) -->
-            <div class="mg" style="margin-top: 10px; margin-bottom: 12px;">
-              <div class="ml" style="margin-bottom:4px">CHIP PHOTO (FOR IMAGE MATCHING)</div>
-              <div class="ref-zone" id="ncImageZone" onclick="document.getElementById('ncImageInput').click()"
-                style="aspect-ratio:16/9; min-height:120px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--s1); border:2px dashed var(--bd2); border-radius:14px; cursor:pointer; position:relative; overflow:hidden">
-                <span style="font-size:28px" id="ncImageIcon">📷</span>
-                <span class="ref-lbl" id="ncImageLbl" style="font-size:10px; color:var(--t2); margin-top:4px; text-align:center; padding:0 12px">Tap to attach a clear photo of this chip's surface</span>
-                <img id="ncImagePreview" style="display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:var(--bg)">
+            <div class="custom-modal-body" style="padding: 16px 20px; overflow-y: auto; max-height: calc(100vh - 120px);">
+              
+              <div class="ml" style="margin-bottom:4px">SELECT GB CAPACITY:</div>
+              <div class="ptabs" style="margin-bottom:10px" id="ncGbSelector">
+                <button class="ptab" onclick="setNcGb('16GB', this)">16G</button>
+                <button class="ptab" onclick="setNcGb('32GB', this)">32G</button>
+                <button class="ptab" onclick="setNcGb('64GB', this)">64G</button>
+                <button class="ptab" onclick="setNcGb('128GB', this)">128G</button>
+                <button class="ptab" onclick="setNcGb('256GB', this)">256G</button>
               </div>
-              <input type="file" id="ncImageInput" accept="image/*,.jpg,.jpeg,.png,.gif,.bmp,.webp,.heic,.heif" style="display:none" onchange="handleNcImage(this)">
-            </div>
 
-            <!-- Required Coded/Non-Coded selector -->
-            <div class="ml" style="margin-bottom:4px">CLASSIFICATION: <span style="color:var(--er)">* REQUIRED</span></div>
-            <div class="ptabs" style="margin-bottom:12px" id="ncClassificationSelector">
-              <button class="ptab" id="ncSelCoded" onclick="selectNcStatus('coded')">🔐 Coded</button>
-              <button class="ptab" id="ncSelNoncode" onclick="selectNcStatus('noncode')">📦 Non-Coded</button>
-            </div>
+              <div class="ml" style="margin-bottom:4px">SELECT STORAGE TYPE:</div>
+              <div class="ptabs" style="margin-bottom:10px" id="ncTypeSelector">
+                <button class="ptab" onclick="setNcType('eMMC', this)">eMMC</button>
+                <button class="ptab" onclick="setNcType('eMCP', this)">eMCP</button>
+              </div>
 
-            <!-- Action buttons inside modal -->
-            <div style="display: flex; gap: 12px; margin-top: 16px;">
-              <button class="custom-modal-btn cancel" type="button" onclick="closeUnrecognizedDetailsModal()" style="flex: 1; padding: 12px 16px; font-size: 13px; font-weight: 700; border-radius: 12px;">Cancel</button>
-              <button class="abtn gn" type="button" onclick="saveAsNonCodeDirect()" style="flex: 2; margin: 0;">➕ Save as Reference Entry</button>
+              <!-- Reference photo upload area inside shortcut flow (FIX 5) -->
+              <div class="mg" style="margin-top: 10px; margin-bottom: 12px;">
+                <div class="ml" style="margin-bottom:4px">CHIP PHOTO (FOR IMAGE MATCHING)</div>
+                <div class="ref-zone" id="ncImageZone" onclick="document.getElementById('ncImageInput').click()"
+                  style="aspect-ratio:16/9; min-height:120px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--s1); border:2px dashed var(--bd2); border-radius:14px; cursor:pointer; position:relative; overflow:hidden">
+                  <span style="font-size:28px" id="ncImageIcon">📷</span>
+                  <span class="ref-lbl" id="ncImageLbl" style="font-size:10px; color:var(--t2); margin-top:4px; text-align:center; padding:0 12px">Tap to attach a clear photo of this chip's surface</span>
+                  <img id="ncImagePreview" style="display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:var(--bg)">
+                </div>
+                <input type="file" id="ncImageInput" accept="image/*,.jpg,.jpeg,.png,.gif,.bmp,.webp,.heic,.heif" style="display:none" onchange="handleNcImage(this)">
+              </div>
+
+              <!-- Required Coded/Non-Coded selector -->
+              <div class="ml" style="margin-bottom:4px">CLASSIFICATION: <span style="color:var(--er)">* REQUIRED</span></div>
+              <div class="ptabs" style="margin-bottom:12px" id="ncClassificationSelector">
+                <button class="ptab" id="ncSelCoded" onclick="selectNcStatus('coded')">🔐 Coded</button>
+                <button class="ptab" id="ncSelNoncode" onclick="selectNcStatus('noncode')">📦 Non-Coded</button>
+              </div>
+
+              <!-- Action buttons inside modal -->
+              <div style="display: flex; gap: 12px; margin-top: 16px;">
+                <button class="custom-modal-btn cancel" type="button" onclick="closeUnrecognizedDetailsModal()" style="flex: 1; padding: 12px 16px; font-size: 13px; font-weight: 700; border-radius: 12px;">Cancel</button>
+                <button class="abtn gn" type="button" onclick="saveAsNonCodeDirect()" style="flex: 2; margin: 0;">➕ Save as Reference Entry</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>none" onchange="handleNcImage(this)">
-        </div>
-
-                <!-- Required Coded/Non-Coded selector -->
-        <div class="ml" style="margin-bottom:4px">CLASSIFICATION: <span style="color:var(--er)">* REQUIRED</span></div>
-        <div class="ptabs" style="margin-bottom:12px" id="ncClassificationSelector">
-          <button class="ptab" id="ncSelCoded" onclick="selectNcStatus('coded')">🔐 Coded</button>
-          <button class="ptab" id="ncSelNoncode" onclick="selectNcStatus('noncode')">📦 Non-Coded</button>
-        </div>
-
-        <button class="abtn gn" onclick="saveAsNonCodeDirect()">➕ Save as Reference Entry</button>
-      </div>
 
       <!-- Technician Approval Notification Card (FIX 8) -->
       <div class="warn-card" id="techApprovalCard" style="display:none; border-color: var(--bd2); background: var(--s1)">
