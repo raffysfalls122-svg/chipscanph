@@ -71,3 +71,60 @@ python manage.py migrate
 | **Technician** | `tech1` | `tech123` |
 
 *IT Admins have full privileges to register new technician accounts, delete users, reset logs, and download DB backups in the **ADMIN** tab.*
+
+---
+
+## ⚙️ Tesseract-OCR Setup (Required for Local OCR Scanner)
+The local image scanner runs using **Tesseract-OCR**. To enable text extraction from chip images, you need to install Tesseract on your host system:
+
+### 1. Windows Installation
+1. Download the Tesseract installer from [UB Mannheim's GitHub](https://github.com/UB-Mannheim/tesseract/wiki) (e.g., `tesseract-ocr-w64-setup-v5.3.0.exe`).
+2. Run the installer. The default path is `C:\Program Files\Tesseract-OCR`.
+3. Add `C:\Program Files\Tesseract-OCR` to your Windows System Environment Variables `PATH`.
+4. Restart your terminal or command prompt to apply changes.
+
+*(The Django backend automatically attempts to locate Tesseract at its default installation path: `C:\Program Files\Tesseract-OCR\tesseract.exe`).*
+
+### 2. macOS Installation
+Install via Homebrew:
+```bash
+brew install tesseract
+```
+
+### 3. Linux (Ubuntu/Debian) Installation
+Install via apt-get:
+```bash
+sudo apt-get update
+sudo apt-get install tesseract-ocr
+```
+
+---
+
+## 🤖 OpenRouter AI-Assisted Chip Scanning & Database Verification
+
+This application uses an optional extra extraction layer powered by **OpenRouter Vision AI**. When you scan/upload a chip image, the system executes two steps:
+1. **Local OCR (Tesseract)** reads text if available.
+2. **OpenRouter Vision AI** reads the uploaded image to extract visible markings/codes.
+
+The backend combines all extracted possibilities, normalizes them, and queries the **local database**. Final chip verification, pricing, grades, storage, and status **always come from the local database**—never from the AI's guesses, ensuring total data integrity.
+
+### Environment Configuration (.env)
+
+Create a `.env` file in the project root based on `.env.example` and set your credentials:
+
+```bash
+# OpenRouter AI Scanning Settings
+OPENROUTER_API_KEY=your-openrouter-api-key-here
+OPENROUTER_MODEL=your-vision-capable-openrouter-model
+OPENROUTER_SITE_URL=http://127.0.0.1:8000
+OPENROUTER_APP_NAME=ChipScanPH
+
+# Database Settings
+DATABASE_ENGINE=sqlite
+DATABASE_NAME=db.sqlite3
+```
+
+- **OpenRouter Fallback**: If `OPENROUTER_API_KEY` is missing, or if OpenRouter returns a 404/failure, the system automatically falls back to local OCR-only scanner mode without crashing.
+- **Model Configuration (404 / Safety Error)**: The model to use is loaded dynamically from the `OPENROUTER_MODEL` variable in your `.env` file (it is not hardcoded in the codebase). If you receive an **"AI model unavailable (404)"** note, it means the model is either not found or not active on your OpenRouter account. In this case, please edit your `.env` file and replace `OPENROUTER_MODEL` with another active, vision-capable model from OpenRouter (e.g. `google/gemini-2.5-flash` or similar). Do not use content-safety, audio, embedding, image-generation, or text-only models for chip image scanning. Use only a vision-capable model that accepts image input and can return text JSON. If the model returns content like `User Safety: safe.`, the selected model is likely not suitable for chip scanning and should be changed in `.env`.
+- **Database Engine Support**: Supports SQLite (default) and PostgreSQL by setting `DATABASE_ENGINE=postgresql` and populating connection details.
+
