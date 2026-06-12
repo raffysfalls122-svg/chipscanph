@@ -1,0 +1,6 @@
+--- Ancestor Path for pg-grades ---
+Level 0: {'tag': 'DIV', 'id': 'pg-grades', 'className': 'pg a', 'display': 'flex', 'height': 'auto', 'offsetHeight': 0, 'opacity': '0', 'visibility': 'visible'}
+Level 1: {'tag': 'DIV', 'id': 'pg-scan', 'className': 'pg', 'display': 'none', 'height': 'auto', 'offsetHeight': 0, 'opacity': '1', 'visibility': 'visible'}
+Level 2: {'tag': 'DIV', 'id': '', 'className': 'sc', 'display': 'flex', 'height': '606px', 'offsetHeight': 606, 'opacity': '1', 'visibility': 'visible'}
+Level 3: {'tag': 'BODY', 'id': '', 'className': '', 'display': 'flex', 'height': '720px', 'offsetHeight': 720, 'opacity': '1', 'visibility': 'visible'}
+Level 4: {'tag': 'HTML', 'id': '', 'className': '', 'display': 'block', 'height': '720px', 'offsetHeight': 720, 'opacity': '1', 'visibility': 'visible'}

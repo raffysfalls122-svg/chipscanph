@@ -447,11 +447,13 @@
       display: none;
       flex-direction: column;
       gap: 10px;
-      animation: su .22s ease
+      animation: su .22s ease forwards
     }
 
     .pg.a {
-      display: flex
+      display: flex;
+      opacity: 1;
+      transform: translateY(0)
     }
 
     @keyframes su {
@@ -3438,9 +3440,9 @@
                 <button class="custom-modal-btn cancel" type="button" onclick="closeUnrecognizedDetailsModal()" style="flex: 1; padding: 12px 16px; font-size: 13px; font-weight: 700; border-radius: 12px;">Cancel</button>
                 <button class="abtn gn" type="button" onclick="saveAsNonCodeDirect()" style="flex: 2; margin: 0;">➕ Save as Reference Entry</button>
               </div>
-            </div>
           </div>
         </div>
+      </div>
 
       <!-- Technician Approval Notification Card (FIX 8) -->
       <div class="warn-card" id="techApprovalCard" style="display:none; border-color: var(--bd2); background: var(--s1)">
@@ -3454,6 +3456,7 @@
       </div>
 
     </div>
+  </div>
 
     <!-- ══ GRADES REFERENCE PAGE (Organized by Capacity accordions) ══ -->
     <div class="pg" id="pg-grades">
@@ -4897,7 +4900,9 @@
     }
 
     function handleManualStorageChange() {
-      const storage = document.getElementById('mStorage').value;
+      const storageSelect = document.getElementById('mStorage');
+      if (!storageSelect) return;
+      const storage = storageSelect.value;
       const gradeSelect = document.getElementById('mGrade');
       if (!gradeSelect) return;
 

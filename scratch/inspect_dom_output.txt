@@ -1,0 +1,68 @@
+--- pg-grades Outer HTML ---
+<div class="pg a" id="pg-grades">
+      <div class="stl">GRADE SCHEMES</div>
+      <div class="grade-card" id="gradesContainer" style="margin-bottom:12px"><div class="gri">
+      <div class="grl">
+        <div class="grg c5">A+</div>
+        <span class="grtb c5 bg5">A1</span>
+      </div>
+      <div class="grc2">
+        <div class="grt">eMMC / eMCP — 16GB</div>
+        <div class="grd">Entry-level storage. Lowest grade and starting tier.</div>
+        <div class="grp">Prefix: KMG*, KMW*, KMF*</div>
+      </div>
+    </div><div class="gri">
+      <div class="grl">
+        <div class="grg c2">A++</div>
+        <span class="grtb c2 bg2">A2</span>
+      </div>
+      <div class="grc2">
+        <div class="grt">eMMC / eMCP — 32GB</div>
+        <div class="grd">Standard storage. Solid mid-range replacement.</div>
+        <div class="grp">Prefix: KMR*, KMQ*, H9TQ*</div>
+      </div>
+    </div><div class="gri">
+      <div class="grl">
+        <div class="grg c3">A+++</div>
+        <span class="grtb c3 bg3">A3</span>
+      </div>
+      <div class="grc2">
+        <div class="grt">eMMC / eMCP — 64GB</div>
+        <div class="grd">Premium grade. High durability and steady speeds.</div>
+        <div class="grp">Prefix: KM5*, KM3*</div>
+      </div>
+    </div><div class="gri">
+      <div class="grl">
+        <div class="grg c4">A++++</div>
+        <span class="grtb c4 bg4">A4</span>
+      </div>
+      <div class="grc2">
+        <div class="grt">eMMC / eMCP — 128GB</div>
+        <div class="grd">High-end condition. Fast speeds for premium phones.</div>
+        <div class="grp">Prefix: KM8*, H9HQ*</div>
+      </div>
+    </div><div class="gri">
+      <div class="grl">
+        <div class="grg c5">A+++++</div>
+        <span class="grtb c5 bg5">A5</span>
+      </div>
+      <div class="grc2">
+        <div class="grt">eMMC / eMCP — 256GB</div>
+        <div class="grd">Flagship storage. Top capacity and highest grade.</div>
+        <div class="grp">Prefix: KM8*, H9HQ*</div>
+      </div>
+    </div></div>
+
+      <div class="warn-card" style="margin-top:12px">
+        <div class="warn-title">⚠️ DO NOT ENTER THESE</div>
+        <div class="tip-tx" style="margin-bottom:6px">❌ <b>RAM / LPDDR:</b> Codes like K4E*, K4F*, H9HK*, H9HN* (usually
+          wide and rectangular). Skip these!</div>
+        <div class="tip-tx">❌ <b>CPU / SoC:</b> Labeled Snapdragon, Helio, Kirin, Exynos (largest chip near board
+          center). Skip these!</div>
+      </div>
+    </div>
+
+--- Children of pg-grades and their heights ---
+Child 0: {'tag': 'DIV', 'id': '', 'className': 'stl', 'offsetHeight': 0, 'display': 'block'}
+Child 1: {'tag': 'DIV', 'id': 'gradesContainer', 'className': 'grade-card', 'offsetHeight': 0, 'display': 'block'}
+Child 2: {'tag': 'DIV', 'id': '', 'className': 'warn-card', 'offsetHeight': 0, 'display': 'block'}
