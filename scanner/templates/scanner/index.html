@@ -7109,7 +7109,7 @@
         if (finalFound) {
           renderScanResultCard(data);
         } else {
-          renderScanNotFound();
+          renderScanNotFound(data);
         }
       }
     }
@@ -7168,10 +7168,26 @@
               <div>Classification: <b>${(chip.status || '') === 'coded' ? '🔐 Coded' : '📦 Non-Coded'}</b></div>
             </div>`;
         } else {
+          let suggestionsHtml = '';
+          if (data.fuzzy_matches && data.fuzzy_matches.length > 0) {
+            suggestionsHtml = `
+              <div style="margin-top:10px; border-top:1px dashed var(--bd); padding-top:8px">
+                <div style="font-size:9px; color:var(--g2); font-family:monospace; margin-bottom:5px; text-align:left">🔍 CLOSE MATCHES IN DATABASE:</div>
+                <div style="display:flex; flex-direction:column; gap:5px">
+                  ${data.fuzzy_matches.map(chip => `
+                    <div class="sug-item" style="display:flex; justify-content:space-between; align-items:center; background:var(--s1); border:1px solid var(--bd); padding:5px 8px; border-radius:6px; cursor:pointer; text-align:left" onclick="selectFuzzyCropMatch('${chip.code}')">
+                      <span><b>${chip.code}</b> <span style="color:var(--t3)">(${chip.size})</span></span>
+                      <span class="sug-tag bg2 c2" style="font-size:8px">${chip.type}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>`;
+          }
           body.innerHTML = `
             <div style="color:var(--g2); line-height:1.7">
               ⚠️ Code not found in database by text or image.<br>
               Add it manually below so future scans recognize it.
+              ${suggestionsHtml}
             </div>`;
         }
 
@@ -7342,18 +7358,47 @@
       if (code) { document.getElementById('CI').value = code; }
     }
 
-    function renderScanNotFound() {
+    function renderScanNotFound(data = null) {
+      let suggestionsHtml = '';
+      if (data && data.fuzzy_matches && data.fuzzy_matches.length > 0) {
+        suggestionsHtml = `
+          <div style="margin-top:12px; border-top:1px dashed var(--bd); padding-top:10px; text-align:left">
+            <div style="font-size:9px; color:var(--g2); font-family:monospace; margin-bottom:6px">🔍 CLOSE MATCHES IN DATABASE:</div>
+            <div style="display:flex; flex-direction:column; gap:6px">
+              ${data.fuzzy_matches.map(chip => `
+                <div class="sug-item" style="display:flex; justify-content:space-between; align-items:center; background:var(--s1); border:1px solid var(--bd); padding:6px 10px; border-radius:8px; cursor:pointer" onclick="selectFuzzyScanMatch('${chip.code}')">
+                  <span><b>${chip.code}</b> <span style="color:var(--t3)">(${chip.size})</span></span>
+                  <span class="sug-tag bg2 c2" style="font-size:8px; padding:2px 5px">${chip.type}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
       document.getElementById('slResultBody').innerHTML = `
         <div class="sl-not-found">
           <div class="big">🚫</div>
           <div style="color:var(--g2); margin-top:4px; line-height:1.6">
-            Not found by text or image.<br>Type the code manually to try again.
+            Not found by text or image.<br>Type the code manually or select a match.
           </div>
+          ${suggestionsHtml}
         </div>`;
       document.getElementById('slManual').classList.add('show');
       const mi = document.getElementById('slManualInput');
       mi.value = '';
       setTimeout(() => mi.focus(), 100);
+    }
+
+    function selectFuzzyScanMatch(code) {
+      closeScanLive();
+      document.getElementById('CI').value = code;
+      checkChip();
+    }
+
+    function selectFuzzyCropMatch(code) {
+      document.getElementById('CI').value = code;
+      checkChip();
     }
 
     // Manual entry fallback lookup (inside the live overlay)

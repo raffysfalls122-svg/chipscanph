@@ -1312,8 +1312,8 @@ def api_scan_image(request):
                                     break
                         if not matched_chip:
                             best_candidate = c_clean
-                            # Auto submit approval request for technician if not matched
-                            if username != 'admin' and username != 'Anonymous' and username != '':
+                            # Auto submit approval request for technician if not matched and code is not Unknown
+                            if username != 'admin' and username != 'Anonymous' and username != '' and c_clean.upper() != 'UNKNOWN':
                                 from .models import ApprovalRequest, Notification
                                 existing = ApprovalRequest.objects.filter(code=c_clean, technician=username, status='pending').first()
                                 if not existing:
@@ -1722,8 +1722,8 @@ def api_scan_image(request):
                 image_file.seek(0)
                 history_entry.image.save(image_file.name, image_file, save=True)
 
-                # Auto submit approval request for technician if not matched
-                if not matched_chip:
+                # Auto submit approval request for technician if not matched and the code is not Unknown
+                if not matched_chip and result_obj["chip_code"] and result_obj["chip_code"].upper() != 'UNKNOWN':
                     if username != 'admin' and username != 'Anonymous' and username != '':
                         from .models import ApprovalRequest, Notification
                         existing = ApprovalRequest.objects.filter(code=result_obj["chip_code"], technician=username, status='pending').first()
@@ -1740,6 +1740,41 @@ def api_scan_image(request):
                             )
 
                 ai_message = "AI assistance disabled. Using OCR-only matching."
+
+                # Find fuzzy matches if not found
+                fuzzy_matches = []
+                if not matched_chip:
+                    best_cand_norm = normalize_code(best_candidate) if best_candidate else ""
+                    if best_cand_norm and best_cand_norm != 'UNKNOWN':
+                        for chip in all_chips:
+                            chip_norm = normalize_code(chip.code)
+                            # Compute Levenshtein distance
+                            def get_levenshtein(a, b):
+                                matrix = []
+                                for i in range(len(b) + 1): matrix.append([i])
+                                for j in range(len(a) + 1): matrix[0].append(j)
+                                for i in range(1, len(b) + 1):
+                                    for j in range(1, len(a) + 1):
+                                        if b[i-1] == a[j-1]:
+                                            matrix[i].append(matrix[i-1][j-1])
+                                        else:
+                                            matrix[i].append(min(
+                                                matrix[i-1][j-1] + 1,
+                                                matrix[i][j-1] + 1,
+                                                matrix[i-1][j] + 1
+                                            ))
+                                return matrix[len(b)][len(a)]
+                            
+                            dist = get_levenshtein(best_cand_norm, chip_norm)
+                            if dist <= 3:
+                                fuzzy_matches.append({
+                                    'code': chip.code,
+                                    'size': chip.size,
+                                    'grade': chip.grade,
+                                    'type': chip.type
+                                })
+                                if len(fuzzy_matches) >= 3:
+                                    break
 
                 yield json.dumps({
                     "event": "final_result",
@@ -1760,6 +1795,7 @@ def api_scan_image(request):
                     "image_code": image_matched_chip.code if image_matched_chip else None,
                     "image_distance": image_distance,
                     "match_method": match_method,
+                    "fuzzy_matches": fuzzy_matches,
                 }) + "\n"
 
             return StreamingHttpResponse(event_generator(), content_type='text/plain')
