@@ -6,3 +6,12 @@ db.sqlite3
 .idea/
 venv/
 .env
+
+# Uploads / Media
+scans/
+chips/
+images/
+
+# Temporary / Test outputs
+*.png
+scratch/
