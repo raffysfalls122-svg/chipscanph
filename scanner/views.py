@@ -827,12 +827,14 @@ def api_stats(request):
         all_techs = Technician.objects.all().count()
         coded_chips = Chip.objects.filter(status='coded').count()
         noncode_chips = Chip.objects.filter(status='noncode').count()
+        manual_chips = Chip.objects.filter(is_manual=True).count()
 
         return JsonResponse({
             'scans': all_scans,
             'techs': all_techs,
             'coded_total': coded_chips,
-            'noncode_total': noncode_chips
+            'noncode_total': noncode_chips,
+            'manual_total': manual_chips
         })
     return JsonResponse({'success': False, 'message': 'Method not allowed'}, status=405)
 

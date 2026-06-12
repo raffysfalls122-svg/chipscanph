@@ -4048,8 +4048,8 @@
 
     // ═══ APP INITIALIZATION ═══
     document.addEventListener('DOMContentLoaded', () => {
-      initStorage();
       checkLoginSession();
+      initStorage();
       renderGrades();
       handleManualStorageChange();
 
@@ -4270,6 +4270,7 @@
         document.getElementById('nb-manual').style.display = 'none';
       }
       fetchNotifications();
+      initStorage();
 
       if (showWelcome) {
         showToast(`Welcome back, ${user.username}!`);
@@ -4281,12 +4282,13 @@
       currentUser = null;
       localStorage.removeItem('cs_current_session');
       document.getElementById('LS').classList.remove('h');
+      initStorage();
     }
 
     // ═══ NAVIGATION / TAB CONTROLLER ═══
     function goTab(tabName) {
-      if (tabName === 'manual' && !isAdminUser()) {
-        showToast("Access Denied: Admin role required for the Add module.", true);
+      if ((tabName === 'manual' || tabName === 'admin') && !isAdminUser()) {
+        showToast("Access Denied: Admin role required for this module.", true);
         return;
       }
       currentTab = tabName;
@@ -6240,28 +6242,30 @@
 
         if (logs.length === 0) {
           globalLogsContainer.innerHTML = `<div class="empty-state"><div class="empty-txt">No scan records inside global log database.</div></div>`;
-          return;
+        } else {
+          logs.forEach(log => {
+            const badgeColor = log.grade === 'A5' ? 'c5' : log.grade === 'A4' ? 'c4' : log.grade === 'A3' ? 'c3' : log.grade === 'A2' ? 'c2' : 'c1';
+            const sLabel = log.status === 'coded' ? '🔐 Coded' : '📦 NC';
+
+            const row = document.createElement('div');
+            row.className = 'ah-item';
+            row.innerHTML = `
+          <div class="ah-gr ${badgeColor}">${log.grade}</div>
+          <div class="ah-main">
+            <div class="ah-code" style="display:flex; align-items:center; gap:5px">
+              ${log.code}
+              <span style="font-size:7px; background:rgba(255,255,255,0.06); padding:1px 3px; border-radius:2px">${sLabel}</span>
+            </div>
+            <div class="ah-user">Tech: <b>${log.user}</b> • ${log.timestamp.split(' ')[0]}</div>
+          </div>
+          <div class="ah-price">₱${log.priceCoded}</div>
+        `;
+            globalLogsContainer.appendChild(row);
+          });
         }
 
-        logs.forEach(log => {
-          const badgeColor = log.grade === 'A5' ? 'c5' : log.grade === 'A4' ? 'c4' : log.grade === 'A3' ? 'c3' : log.grade === 'A2' ? 'c2' : 'c1';
-          const sLabel = log.status === 'coded' ? '🔐 Coded' : '📦 NC';
-
-          const row = document.createElement('div');
-          row.className = 'ah-item';
-          row.innerHTML = `
-        <div class="ah-gr ${badgeColor}">${log.grade}</div>
-        <div class="ah-main">
-          <div class="ah-code" style="display:flex; align-items:center; gap:5px">
-            ${log.code}
-            <span style="font-size:7px; background:rgba(255,255,255,0.06); padding:1px 3px; border-radius:2px">${sLabel}</span>
-          </div>
-          <div class="ah-user">Tech: <b>${log.user}</b> • ${log.timestamp.split(' ')[0]}</div>
-        </div>
-        <div class="ah-price">₱${log.priceCoded}</div>
-      `;
-          globalLogsContainer.appendChild(row);
-        });
+        // 4. Fetch Pending Approval Requests
+        await fetchPendingApprovals();
 
       } catch (err) {
         showToast("Error updating Admin metrics.", true);
