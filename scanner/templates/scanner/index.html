@@ -424,7 +424,27 @@
     }
 
     .ni {
-      font-size: 14px
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+    }
+
+    .ni svg {
+      width: 100%;
+      height: 100%;
+      stroke-width: 2.2px;
+    }
+
+    .text-icon {
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+      vertical-align: text-bottom;
+      margin-right: 4px;
+      stroke-width: 2.2px;
     }
 
     /* ── SCROLL ── */
@@ -3072,6 +3092,51 @@
     .gpopup-btn-confirm:active {
       transform: scale(0.98);
     }
+
+    /* Clean Premium Icons style classes */
+    .svg-ico {
+      width: 1.2em;
+      height: 1.2em;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      stroke: currentColor;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+    .svg-ico.large {
+      width: 2em;
+      height: 2em;
+    }
+    .svg-ico.huge {
+      width: 2.5em;
+      height: 2.5em;
+    }
+    .svg-ico.tiny {
+      width: 1em;
+      height: 1em;
+    }
+    .price-badge .svg-ico, .ptab .svg-ico, .ref-filter-btn .svg-ico, .pmb .svg-ico {
+      margin-right: 4px;
+    }
+    .err-title .svg-ico, .warn-title .svg-ico, .custom-modal-title .svg-ico {
+      margin-right: 8px;
+    }
+    .login-err .svg-ico {
+      margin-right: 6px;
+      color: var(--er);
+    }
+    .scan-chip-ico svg {
+      width: 32px;
+      height: 32px;
+      display: block;
+      margin: 0 auto;
+    }
+
 </style>
 </head>
 
@@ -3129,7 +3194,7 @@
           <input class="lf-input" id="lP" type="password" placeholder="Enter password"
             onkeydown="if(event.key==='Enter')doLogin()">
         </div>
-        <div class="login-err" id="lE">❌ Invalid username or password</div>
+        <div class="login-err" id="lE"><svg class="svg-ico" style="color:var(--er)" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Invalid username or password</div>
         <button class="login-btn" onclick="doLogin()">Sign In →</button>
         
         <button class="toggle-login-btn" onclick="toggleLoginViews('google')">
@@ -3184,7 +3249,7 @@
       <!-- Notification bell -->
       <div class="notif-btn-wrapper" style="position: relative; margin-right: 4px;">
         <button class="notif-btn" onclick="toggleNotifPanel(event)">
-          🔔<span class="notif-badge" id="notifBadge" style="display:none">0</span>
+          <svg class="svg-ico" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><span class="notif-badge" id="notifBadge" style="display:none">0</span>
         </button>
         <!-- Notification dropdown panel -->
         <div class="notif-panel" id="notifPanel">
@@ -3205,14 +3270,41 @@
   </div>
 
   <div class="nav">
-    <button class="nb a" onclick="goTab('scan')" id="nb-scan"><span class="ni">📷</span>SCAN</button>
-    <button class="nb" onclick="goTab('grades')" id="nb-grades"><span class="ni">📊</span>GRADES</button>
-    <button class="nb" onclick="goTab('prices')" id="nb-prices"><span class="ni">💰</span>PRICES</button>
-    <button class="nb" onclick="goTab('ref')" id="nb-ref"><span class="ni">📸</span>REF</button>
-    <button class="nb" onclick="goTab('manual')" id="nb-manual"><span class="ni">✏️</span>ADD</button>
-    <button class="nb" onclick="goTab('history')" id="nb-history"><span class="ni">🕘</span>HISTORY</button>
-    <button class="nb at" onclick="goTab('admin')" id="nb-admin" style="display:none"><span
-        class="ni">🔐</span>ADMIN</button>
+    <button class="nb a" onclick="goTab('scan')" id="nb-scan">
+      <span class="ni">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+      </span>SCAN
+    </button>
+    <button class="nb" onclick="goTab('grades')" id="nb-grades">
+      <span class="ni">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+      </span>GRADES
+    </button>
+    <button class="nb" onclick="goTab('prices')" id="nb-prices">
+      <span class="ni">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+      </span>PRICES
+    </button>
+    <button class="nb" onclick="goTab('ref')" id="nb-ref">
+      <span class="ni">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+      </span>REF
+    </button>
+    <button class="nb" onclick="goTab('manual')" id="nb-manual">
+      <span class="ni">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"></path></svg>
+      </span>ADD
+    </button>
+    <button class="nb" onclick="goTab('history')" id="nb-history">
+      <span class="ni">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      </span>HISTORY
+    </button>
+    <button class="nb at" onclick="goTab('admin')" id="nb-admin" style="display:none">
+      <span class="ni">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      </span>ADMIN
+    </button>
   </div>
 
   <div class="sc">
@@ -3222,7 +3314,7 @@
 
       <!-- CAMERA CAPTURE — opens the device camera, then auto-scans -->
       <button class="scan-chip-btn" onclick="startCameraScan()">
-        <span class="scan-chip-ico">📷</span>
+        <span class="scan-chip-ico"><svg class="svg-ico" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></span>
         <span>SCAN CHIP</span>
         <span class="scan-chip-sub">Steady the camera over the chip &amp; capture</span>
       </button>
@@ -3230,10 +3322,10 @@
       <!-- PROBLEM 3 FIX: Manual camera/file select buttons for reliable device mode selection -->
       <div style="display:flex; gap:12px; margin-top:12px;">
         <button class="abtn" style="flex:1; font-size:12px; padding:10px;" onclick="openCameraInput()" title="Force camera mode (mobile)">
-          📷 Camera
+          <svg class="svg-ico" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg> Camera
         </button>
         <button class="abtn" style="flex:1; font-size:12px; padding:10px;" onclick="openFileInput()" title="Force file picker (desktop)">
-          📁 Files
+          <svg class="svg-ico" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> Files
         </button>
       </div>
 
@@ -3249,7 +3341,7 @@
       <!-- PREMIUM FILE UPLOAD SCANNER -->
       <div class="ref-zone" onclick="document.getElementById('fileInput').click()" id="uploadZone"
         style="aspect-ratio: 4/3; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--s1); border: 2px dashed var(--bd2); border-radius: 20px; cursor: pointer; transition: all 0.2s; min-height: 200px; position: relative;">
-        <span style="font-size: 36px; margin-bottom: 8px;">📤</span>
+        <svg class="svg-ico huge" style="margin-bottom:8px; color:var(--t2);" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
         <span class="ref-lbl" style="font-size: 13px; font-weight: 700; color: var(--tx);">UPLOAD & SCAN CHIP
           PHOTO</span>
         <span class="ref-lbl"
@@ -3275,13 +3367,13 @@
 
       <!-- Tip -->
       <div class="tip">
-        <div class="tip-ico">💡</div>
+        <div class="tip-ico" style="color:var(--g2); display:flex; align-items:center;"><svg class="svg-ico" viewBox="0 0 24 24"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M15.09 14c.18-.33.3-.68.37-1.04.18-1.07-.12-2.18-.84-3A5 5 0 0 0 6 9.73c.02.77.22 1.52.58 2.19.46.85 1.1 1.56 1.87 2.08a5.93 5.93 0 0 1 2.3 4H12a5.93 5.93 0 0 1 2.3-4c.77-.52 1.41-1.23 1.87-2.08z"></path></svg></div>
         <div class="tip-tx"><b>FOR BEST ACCURACY:</b> Take a close-up, focused photo of the chip so it fills the screen (avoid blurry or distant photos). Use the <b>Crop &amp; Rotate</b> tool to align the text horizontally. You can also type the code manually if needed.</div>
       </div>
 
       <!-- Smart Warnings (For RAM/CPU) -->
       <div class="err-card" id="errCard">
-        <div class="err-title" id="errTitle">❌ RAM Code Detected</div>
+        <div class="err-title" id="errTitle" style="display:flex; align-items:center; gap:8px"><svg class="svg-ico" style="color:var(--er)" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg><span id="errTitleText">RAM Code Detected</span></div>
         <div class="err-body" id="errBody">You have entered a RAM code. Storage checks do not accept LPDDR. Please
           search for the medium-sized square storage chip instead.</div>
         <div class="err-tags" id="errTags">
@@ -3296,7 +3388,8 @@
           <div>
             <div class="res-code-lbl" id="spTextTitle" style="display:flex; align-items:center; gap:7px">
               <span class="ai-spinner" id="spTextSpin" style="width:13px;height:13px;border-width:2px"></span>
-              🔤 Scanning Text…
+              <svg class="svg-ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <span id="spTextTitleText">Scanning Text…</span>
             </div>
             <div id="spTextResult" style="margin-top:6px; font-size:12px; font-family:monospace; display:none">
               <div>Detected: <b id="spTextCode" style="color:var(--tx)">—</b></div>
@@ -3307,7 +3400,8 @@
           <div style="border-top:1px solid var(--bd); padding-top:11px">
             <div class="res-code-lbl" id="spImgTitle" style="display:flex; align-items:center; gap:7px">
               <span class="ai-spinner" id="spImgSpin" style="width:13px;height:13px;border-width:2px; display:none"></span>
-              🖼️ Scanning Picture…
+              <svg class="svg-ico" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <span id="spImgTitleText">Scanning Picture…</span>
             </div>
             <div id="spImgResult" style="margin-top:6px; font-size:12px; font-family:monospace; display:none">
               <div id="spImgStatus" style="font-weight:700">—</div>
@@ -3382,12 +3476,12 @@
         <div class="price-row">
           <div class="price-cell">
             <div class="price-lbl">BUYING PRICE</div>
-            <div class="price-badge cb2">🔐 Coded</div>
+            <div class="price-badge cb2"><svg class="svg-ico" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Coded</div>
             <div class="price-val" id="RPC">—</div>
           </div>
           <div class="price-cell">
             <div class="price-lbl">BUYING PRICE</div>
-            <div class="price-badge nb2">📦 Non-Code</div>
+            <div class="price-badge nb2"><svg class="svg-ico" viewBox="0 0 24 24"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><polygon points="12 22.08 12 12 3 6.92 3 17.16 12 22.08"></polygon><polygon points="12 22.08 12 12 21 6.92 21 17.16 12 22.08"></polygon><polygon points="12 12 3 6.92 12 1.84 21 6.92 12 12"></polygon></svg> Non-Code</div>
             <div class="price-val" id="RPNC">—</div>
           </div>
         </div>
@@ -3396,7 +3490,7 @@
         <div class="custom-modal" id="ncFlowCard" style="display:none">
           <div class="custom-modal-card" style="max-width: 400px; width: 100%;">
             <div class="custom-modal-header">
-              <div class="custom-modal-title">⚠️ Code Not in Database</div>
+              <div class="custom-modal-title"><svg class="svg-ico" style="color:var(--g2)" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Code Not in Database</div>
               <span onclick="closeUnrecognizedDetailsModal()" style="cursor:pointer; color:var(--t2); font-weight:bold; font-size:22px; line-height: 1">&times;</span>
             </div>
             <div class="custom-modal-body" style="padding: 16px 20px; overflow-y: auto; max-height: calc(100vh - 120px);">
@@ -3421,7 +3515,7 @@
                 <div class="ml" style="margin-bottom:4px">CHIP PHOTO (FOR IMAGE MATCHING)</div>
                 <div class="ref-zone" id="ncImageZone" onclick="document.getElementById('ncImageInput').click()"
                   style="aspect-ratio:16/9; min-height:120px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--s1); border:2px dashed var(--bd2); border-radius:14px; cursor:pointer; position:relative; overflow:hidden">
-                  <span style="font-size:28px" id="ncImageIcon">📷</span>
+                  <span id="ncImageIcon" style="display:inline-flex; align-items:center; justify-content:center; font-size:28px;"><svg class="svg-ico large" style="color:var(--t2)" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></span>
                   <span class="ref-lbl" id="ncImageLbl" style="font-size:10px; color:var(--t2); margin-top:4px; text-align:center; padding:0 12px">Tap to attach a clear photo of this chip's surface</span>
                   <img id="ncImagePreview" style="display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:var(--bg)">
                 </div>
@@ -3431,14 +3525,14 @@
               <!-- Required Coded/Non-Coded selector -->
               <div class="ml" style="margin-bottom:4px">CLASSIFICATION: <span style="color:var(--er)">* REQUIRED</span></div>
               <div class="ptabs" style="margin-bottom:12px" id="ncClassificationSelector">
-                <button class="ptab" id="ncSelCoded" onclick="selectNcStatus('coded')">🔐 Coded</button>
-                <button class="ptab" id="ncSelNoncode" onclick="selectNcStatus('noncode')">📦 Non-Coded</button>
+                <button class="ptab" id="ncSelCoded" onclick="selectNcStatus('coded')"><svg class="svg-ico" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Coded</button>
+                <button class="ptab" id="ncSelNoncode" onclick="selectNcStatus('noncode')"><svg class="svg-ico" viewBox="0 0 24 24"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><polygon points="12 22.08 12 12 3 6.92 3 17.16 12 22.08"></polygon><polygon points="12 22.08 12 12 21 6.92 21 17.16 12 22.08"></polygon><polygon points="12 12 3 6.92 12 1.84 21 6.92 12 12"></polygon></svg> Non-Coded</button>
               </div>
 
               <!-- Action buttons inside modal -->
               <div style="display: flex; gap: 12px; margin-top: 16px;">
                 <button class="custom-modal-btn cancel" type="button" onclick="closeUnrecognizedDetailsModal()" style="flex: 1; padding: 12px 16px; font-size: 13px; font-weight: 700; border-radius: 12px;">Cancel</button>
-                <button class="abtn gn" type="button" onclick="saveAsNonCodeDirect()" style="flex: 2; margin: 0;">➕ Save as Reference Entry</button>
+                <button class="abtn gn" type="button" onclick="saveAsNonCodeDirect()" style="flex: 2; margin: 0; display:inline-flex; align-items:center; justify-content:center; gap:6px;"><svg class="svg-ico" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Save as Reference Entry</button>
               </div>
           </div>
         </div>
@@ -3446,7 +3540,7 @@
 
       <!-- Technician Approval Notification Card (FIX 8) -->
       <div class="warn-card" id="techApprovalCard" style="display:none; border-color: var(--bd2); background: var(--s1)">
-        <div class="warn-title" style="color:var(--g2)">⚠️ Code Not in Database</div>
+        <div class="warn-title" style="color:var(--g2); display:flex; align-items:center; gap:6px;"><svg class="svg-ico" style="color:var(--g2)" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Code Not in Database</div>
         <div class="tip-tx" style="margin-bottom:6px; color:var(--g2); font-weight:500">
           This chip model is unrecognized. It has been automatically submitted to the Administrator for approval.
         </div>
@@ -3466,37 +3560,37 @@
       </div>
 
       <div class="warn-card" style="margin-top:12px">
-        <div class="warn-title">⚠️ DO NOT ENTER THESE</div>
-        <div class="tip-tx" style="margin-bottom:6px">❌ <b>RAM / LPDDR:</b> Codes like K4E*, K4F*, H9HK*, H9HN* (usually
-          wide and rectangular). Skip these!</div>
-        <div class="tip-tx">❌ <b>CPU / SoC:</b> Labeled Snapdragon, Helio, Kirin, Exynos (largest chip near board
-          center). Skip these!</div>
+        <div class="warn-title" style="display:flex; align-items:center; gap:6px;"><svg class="svg-ico" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> DO NOT ENTER THESE</div>
+        <div class="tip-tx" style="margin-bottom:6px; display:flex; align-items:flex-start; gap:6px;"><svg class="svg-ico" style="color:var(--er)" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> <span><b>RAM / LPDDR:</b> Codes like K4E*, K4F*, H9HK*, H9HN* (usually
+          wide and rectangular). Skip these!</span></div>
+        <div class="tip-tx" style="display:flex; align-items:flex-start; gap:6px;"><svg class="svg-ico" style="color:var(--er)" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> <span><b>CPU / SoC:</b> Labeled Snapdragon, Helio, Kirin, Exynos (largest chip near board
+          center). Skip these!</span></div>
       </div>
     </div>
 
     <!-- ══ PRICES SETTINGS PAGE ══ -->
     <div class="pg" id="pg-prices">
       <div class="ptabs" style="margin-bottom:4px">
-        <button class="ptab a" id="pTabCoded" onclick="switchPriceTab('coded')">🔐 Coded Prices</button>
-        <button class="ptab" id="pTabNonCode" onclick="switchPriceTab('noncode')">📦 Non-Code Prices</button>
+        <button class="ptab a" id="pTabCoded" onclick="switchPriceTab('coded')"><svg class="svg-ico" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Coded Prices</button>
+        <button class="ptab" id="pTabNonCode" onclick="switchPriceTab('noncode')"><svg class="svg-ico" viewBox="0 0 24 24"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><polygon points="12 22.08 12 12 3 6.92 3 17.16 12 22.08"></polygon><polygon points="12 22.08 12 12 21 6.92 21 17.16 12 22.08"></polygon><polygon points="12 12 3 6.92 12 1.84 21 6.92 12 12"></polygon></svg> Non-Code Prices</button>
       </div>
 
       <div class="psec a" id="pSecCoded">
-        <div class="pmb cb2">🔐 CODED — verified inside database</div>
+        <div class="pmb cb2"><svg class="svg-ico" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> CODED — verified inside database</div>
         <div class="price-rows" id="pricesContainerCoded">
           <!-- Rendered via JS -->
         </div>
       </div>
 
       <div class="psec" id="pSecNonCode">
-        <div class="pmb nb2">📦 NON-CODE — unverified custom rates</div>
+        <div class="pmb nb2"><svg class="svg-ico" viewBox="0 0 24 24"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><polygon points="12 22.08 12 12 3 6.92 3 17.16 12 22.08"></polygon><polygon points="12 22.08 12 12 21 6.92 21 17.16 12 22.08"></polygon><polygon points="12 12 3 6.92 12 1.84 21 6.92 12 12"></polygon></svg> NON-CODE — unverified custom rates</div>
         <div class="price-rows" id="pricesContainerNonCode">
           <!-- Rendered via JS -->
         </div>
       </div>
 
-      <button class="abtn gn" onclick="savePrices()">💾 Save Custom Prices</button>
-      <div class="svt" id="pricesSavedTxt">✓ Prices successfully synced on local storage</div>
+      <button class="abtn gn" onclick="savePrices()" style="display:inline-flex; align-items:center; justify-content:center; gap:6px;"><svg class="svg-ico" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Save Custom Prices</button>
+      <div class="svt" id="pricesSavedTxt" style="display:inline-flex; align-items:center; gap:6px;"><svg class="svg-ico" style="color:var(--g5)" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> Prices successfully synced on local storage</div>
     </div>
 
     <!-- ══ REFERENCE DATABASE BROWSER ══ -->
@@ -3505,12 +3599,12 @@
 
       <!-- Search + Filter Bar -->
       <div class="ref-search-bar">
-        <input class="ref-search-input" id="refSearchInput" placeholder="🔍 Search by code or type…"
+        <input class="ref-search-input" id="refSearchInput" placeholder="Search by code or type…"
           oninput="renderRefDatabase()">
         <div class="ref-filters" id="refFilterRow">
           <button class="ref-filter-btn a" onclick="setRefFilter('all', this)">All</button>
-          <button class="ref-filter-btn" onclick="setRefFilter('coded', this)">🔐 Coded</button>
-          <button class="ref-filter-btn" onclick="setRefFilter('noncode', this)">📦 Non-Coded</button>
+          <button class="ref-filter-btn" onclick="setRefFilter('coded', this)"><svg class="svg-ico" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Coded</button>
+          <button class="ref-filter-btn" onclick="setRefFilter('noncode', this)"><svg class="svg-ico" viewBox="0 0 24 24"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><polygon points="12 22.08 12 12 3 6.92 3 17.16 12 22.08"></polygon><polygon points="12 22.08 12 12 21 6.92 21 17.16 12 22.08"></polygon><polygon points="12 12 3 6.92 12 1.84 21 6.92 12 12"></polygon></svg> Non-Coded</button>
           <button class="ref-filter-btn" onclick="setRefFilter('16GB', this)">16GB</button>
           <button class="ref-filter-btn" onclick="setRefFilter('32GB', this)">32GB</button>
           <button class="ref-filter-btn" onclick="setRefFilter('64GB', this)">64GB</button>
@@ -3571,8 +3665,8 @@
         <div class="mg">
           <div class="ml">CLASSIFICATION: <span style="color:var(--er)">* REQUIRED</span></div>
           <div class="ptabs" id="mClassificationSelector">
-            <button class="ptab" id="mSelCoded" onclick="selectManualStatus('coded')">🔐 Coded</button>
-            <button class="ptab" id="mSelNoncode" onclick="selectManualStatus('noncode')">📦 Non-Coded</button>
+            <button class="ptab" id="mSelCoded" onclick="selectManualStatus('coded')"><svg class="svg-ico" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Coded</button>
+            <button class="ptab" id="mSelNoncode" onclick="selectManualStatus('noncode')"><svg class="svg-ico" viewBox="0 0 24 24"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><polygon points="12 22.08 12 12 3 6.92 3 17.16 12 22.08"></polygon><polygon points="12 22.08 12 12 21 6.92 21 17.16 12 22.08"></polygon><polygon points="12 12 3 6.92 12 1.84 21 6.92 12 12"></polygon></svg> Non-Coded</button>
           </div>
         </div>
 
@@ -3581,7 +3675,7 @@
           <div class="ml">CHIP PHOTO (FOR IMAGE MATCHING)</div>
           <div class="ref-zone" id="mImageZone" onclick="document.getElementById('mImageInput').click()"
             style="aspect-ratio:16/9; min-height:120px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--s1); border:2px dashed var(--bd2); border-radius:14px; cursor:pointer; position:relative; overflow:hidden">
-            <span style="font-size:28px" id="mImageIcon">📷</span>
+            <span id="mImageIcon" style="display:inline-flex; align-items:center; justify-content:center; font-size:28px;"><svg class="svg-ico large" style="color:var(--t2)" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></span>
             <span class="ref-lbl" id="mImageLbl" style="font-size:10px; color:var(--t2); margin-top:4px; text-align:center; padding:0 12px">Tap to attach a clear photo of this chip's surface</span>
             <img id="mImagePreview" style="display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:var(--bg)">
           </div>
@@ -3589,7 +3683,7 @@
           <input type="file" id="mImageInput" accept="image/*,.jpg,.jpeg,.png,.gif,.bmp,.webp,.heic,.heif" style="display:none" onchange="handleManualImage(this)">
         </div>
 
-        <button class="abtn gn" onclick="addManualChip()">➕ Save to Database</button>
+        <button class="abtn gn" onclick="addManualChip()" style="display:inline-flex; align-items:center; justify-content:center; gap:6px;"><svg class="svg-ico" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Save to Database</button>
       </div>
 
       <!-- Custom entries list -->
@@ -3608,13 +3702,13 @@
       </div>
 
       <button class="abtn go" id="btnClearHistory" onclick="clearMyHistory()"
-        style="margin-top:10px; border-color:var(--g1); color:var(--g1)">🗑️ Clear My History</button>
+        style="margin-top:10px; border-color:var(--g1); color:var(--g1); display:inline-flex; align-items:center; justify-content:center; gap:6px;"><svg class="svg-ico" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Clear My History</button>
     </div>
 
     <!-- ══ ADMIN CONSOLE PAGE ══ -->
     <div class="pg" id="pg-admin">
       <div class="admin-banner">
-        <span style="font-size:24px">🔐</span>
+        <span style="font-size:24px; display:inline-flex; align-items:center; color:var(--ad);"><svg class="svg-ico" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
         <div>
           <div class="res-code-val" style="color:var(--ad)">Admin Control Panel</div>
           <div class="tip-tx" style="font-size:10px">Full system access • IT Administrator privilege</div>
@@ -3657,7 +3751,7 @@
         </div>
 
         <div class="add-user-form">
-          <div class="ml">➕ ADD NEW USER</div>
+          <div class="ml" style="display:inline-flex; align-items:center; gap:6px;"><svg class="svg-ico" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> ADD NEW USER</div>
           <div class="auf2">
             <input class="afi" id="auName" placeholder="Username" autocapitalize="none">
             <input class="afi" id="auPass" placeholder="Password" type="password">
@@ -3688,16 +3782,15 @@
 
       <div class="stl">DATABASE CONTROLS</div>
       <div class="mrow">
-        <button class="abtn go" onclick="exportDatabaseJSON()">📤 Backup DB (JSON)</button>
-        <button class="abtn go" onclick="clearGlobalScans()" style="color:var(--er); border-color:var(--er)">🗑️ Reset
-          All Logs</button>
+        <button class="abtn go" onclick="exportDatabaseJSON()" style="display:inline-flex; align-items:center; justify-content:center; gap:6px;"><svg class="svg-ico" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> Backup DB (JSON)</button>
+        <button class="abtn go" onclick="clearGlobalScans()" style="color:var(--er); border-color:var(--er); display:inline-flex; align-items:center; justify-content:center; gap:6px;"><svg class="svg-ico" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Reset All Logs</button>
       </div>
     </div>
 
   </div>
 
   <!-- Floating Notification Toast -->
-  <div class="toast" id="systemToast">✓ Toast confirmation message</div>
+  <div class="toast" id="systemToast" style="display:inline-flex; align-items:center; gap:6px;"><svg class="svg-ico" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> Toast confirmation message</div>
 
   <!-- Fullscreen AI scanning spinner overlay -->
   <div class="ai-overlay" id="aiOverlay">
@@ -3717,7 +3810,7 @@
       <div class="sl-step on" id="slStepText">
         <div class="sl-step-h">
           <span class="sl-spin" id="slTextSpin"></span>
-          <span id="slTextHdr">🔍 Scanning Text…</span>
+          <span id="slTextHdr" style="display:inline-flex; align-items:center; gap:6px;"><svg class="svg-ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><span id="slTextHdrText">Scanning Text…</span></span>
         </div>
         <div class="sl-detail" id="slTextDetail">
           <div>Code Detected: <span class="code" id="slTextCode">—</span></div>
@@ -3729,7 +3822,7 @@
       <div class="sl-step" id="slStepImg">
         <div class="sl-step-h">
           <span class="sl-spin" id="slImgSpin" style="display:none"></span>
-          <span id="slImgHdr">📷 Scanning Picture…</span>
+          <span id="slImgHdr" style="display:inline-flex; align-items:center; gap:6px;"><svg class="svg-ico" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg><span id="slImgHdrText">Scanning Picture…</span></span>
         </div>
         <div class="sl-detail" id="slImgDetail">
           <div id="slImgStatus">—</div>
@@ -3759,7 +3852,7 @@
 
     <div class="sl-actions">
       <button class="sl-btn ghost" onclick="closeScanLive()">Close</button>
-      <button class="sl-btn primary" id="slScanAgain" onclick="closeScanLive(); startCameraScan()">📷 Scan Again</button>
+      <button class="sl-btn primary" id="slScanAgain" onclick="closeScanLive(); startCameraScan()" style="display:inline-flex; align-items:center; justify-content:center; gap:6px;"><svg class="svg-ico" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg> Scan Again</button>
     </div>
   </div>
 
@@ -3767,8 +3860,8 @@
   <div class="crop-modal" id="cropRotateModal">
     <div class="crop-container">
       <div class="crop-header">
-        <div class="crop-title">🔬 Align & Adjust <em>Chipset</em></div>
-        <button class="crop-close" onclick="closeCropModal()">✕</button>
+        <div class="crop-title" style="display:inline-flex; align-items:center; gap:6px;"><svg class="svg-ico" viewBox="0 0 24 24"><path d="M6.13 1L6 16a2 2 0 0 0 2 2h15"></path><path d="M17.87 23L18 8a2 2 0 0 0-2-2H1"></path></svg> Align & Adjust <em>Chipset</em></div>
+        <button class="crop-close" onclick="closeCropModal()" style="display:inline-flex; align-items:center; justify-content:center;"><svg class="svg-ico" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
       </div>
 
       <div class="crop-preview-wrap" id="cropPreviewWrap">
@@ -3783,8 +3876,8 @@
 
       <div class="crop-controls">
         <div class="crop-btn-row">
-          <button class="crop-action-btn" onclick="rotateCropImage(-90)">🔄 Rotate -90°</button>
-          <button class="crop-action-btn" onclick="rotateCropImage(90)">🔄 Rotate +90°</button>
+          <button class="crop-action-btn" onclick="rotateCropImage(-90)"><svg class="svg-ico" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg> Rotate -90°</button>
+          <button class="crop-action-btn" onclick="rotateCropImage(90)"><svg class="svg-ico" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg> Rotate +90°</button>
         </div>
 
         <div class="crop-slider-group">
@@ -3796,7 +3889,7 @@
             oninput="onTiltSliderChange(this.value)">
         </div>
 
-        <button class="crop-scan-btn" onclick="executeCroppedScan()">⚡ ANALYZE & EXTRACT CODE</button>
+        <button class="crop-scan-btn" onclick="executeCroppedScan()" style="display:inline-flex; align-items:center; justify-content:center; gap:8px;"><svg class="svg-ico" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> ANALYZE & EXTRACT CODE</button>
       </div>
     </div>
   </div>
@@ -3805,7 +3898,7 @@
   <div class="custom-modal" id="unrecognizedChipModal">
     <div class="custom-modal-card">
       <div class="custom-modal-header">
-        <div class="custom-modal-title">⚠️ Chip Unrecognized</div>
+        <div class="custom-modal-title"><svg class="svg-ico" style="color:var(--g2)" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Chip Unrecognized</div>
       </div>
       <div class="custom-modal-body">
         The scanned chip code <b id="unrecognizedChipCode" style="color:var(--g2); font-family:monospace">—</b> was not found in the database.
@@ -3818,6 +3911,11 @@
   </div>
 
   <script>
+    const iconLock = '<svg class="svg-ico" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
+    const iconPackage = '<svg class="svg-ico" viewBox="0 0 24 24"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><polygon points="12 22.08 12 12 3 6.92 3 17.16 12 22.08"></polygon><polygon points="12 22.08 12 12 21 6.92 21 17.16 12 22.08"></polygon><polygon points="12 12 3 6.92 12 1.84 21 6.92 12 12"></polygon></svg>';
+    const okIcon = '<svg class="svg-ico" style="color:var(--g5); margin-right:4px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+    const noIcon = '<svg class="svg-ico" style="color:var(--er); margin-right:4px;" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+
     // Grade metadata details
     // Grade ↔ size is a fixed 1:1 mapping. Plus-count equals the grade number.
     // A1 (A+) at 16GB is the lowest / starting grade.
@@ -3848,21 +3946,21 @@
       if (/^(K4E|K4F|H9HK|H9HN)/i.test(c)) {
         return {
           type: 'RAM',
-          title: "❌ RAM Chip Detected",
+          title: "RAM Chip Detected",
           body: `You have scanned/entered code <b>${code}</b> which belongs to a <b>LPDDR/RAM</b> memory matrix. Scanners skip RAM. Please look for the storage model (eMMC/eMCP) nearby.`
         };
       }
       if (/^(PM|QualcommPM)/i.test(c)) {
         return {
           type: 'PMIC',
-          title: "❌ PMIC Chip Detected",
+          title: "PMIC Chip Detected",
           body: `You have scanned/entered code <b>${code}</b> which belongs to a Qualcomm <b>Power Management IC (PMIC)</b>. Scanners do not buy PMIC components. Scan the storage chip instead.`
         };
       }
       if (/^(SNAP|HELI|KIR|EXYN|SM|SDM|MT|MSM|HELIO|EXYNOS|KIRIN)/i.test(c)) {
         return {
           type: 'CPU',
-          title: "❌ CPU / SoC Detected",
+          title: "CPU / SoC Detected",
           body: `You have scanned/entered code <b>${code}</b> which belongs to the primary phone <b>Processor/CPU</b>. Scanners do not buy CPUs. Scan the storage chip instead.`
         };
       }
@@ -3933,9 +4031,9 @@
       const btn = document.querySelector('#ncFlowCard .abtn.gn');
       if (!btn) return;
       if (isAdminUser()) {
-        btn.textContent = "➕ Save as Reference Entry";
+        btn.innerHTML = '<svg class="svg-ico" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Save as Reference Entry';
       } else {
-        btn.textContent = "📝 Submit for Admin Approval";
+        btn.innerHTML = '<svg class="svg-ico" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> Submit for Admin Approval';
       }
     }
 
@@ -4147,20 +4245,20 @@
       const errEl = document.getElementById('gE');
       
       if (!name || !age) {
-        errEl.textContent = '❌ Name and age are required';
+        errEl.innerHTML = noIcon + ' Name and age are required';
         errEl.classList.add('s');
         return;
       }
       
       const ageVal = parseInt(age, 10);
       if (isNaN(ageVal) || ageVal <= 0) {
-        errEl.textContent = '❌ Please enter a valid age';
+        errEl.innerHTML = noIcon + ' Please enter a valid age';
         errEl.classList.add('s');
         return;
       }
       
       if (ageVal < 18) {
-        errEl.textContent = '❌ Access blocked: You must be 18 or older to use this system.';
+        errEl.innerHTML = noIcon + ' Access blocked: You must be 18 or older to use this system.';
         errEl.classList.add('s');
         return;
       }
@@ -4184,12 +4282,12 @@
           hideGooglePopup();
           loginSuccess(data.user);
         } else {
-          errEl.textContent = '❌ ' + (data.message || 'Login failed');
+          errEl.innerHTML = noIcon + ' ' + (data.message || 'Login failed');
           errEl.classList.add('s');
         }
       } catch (err) {
         console.error('[GOOGLE LOGIN ERROR]', err);
-        errEl.textContent = '❌ Connection failed: ' + err.message;
+        errEl.innerHTML = noIcon + ' Connection failed: ' + err.message;
         errEl.classList.add('s');
       } finally {
         if (btn) btn.disabled = false;
@@ -4207,7 +4305,7 @@
       const errEl = document.getElementById('lE');
 
       if (!u || !p) {
-        errEl.textContent = '❌ Username and password are required';
+        errEl.innerHTML = noIcon + ' Username and password are required';
         errEl.classList.add('s');
         return;
       }
@@ -4235,12 +4333,12 @@
           document.getElementById('lU').value = '';
           document.getElementById('lP').value = '';
         } else {
-          errEl.textContent = '❌ ' + (data.message || 'Invalid username or password');
+          errEl.innerHTML = noIcon + ' ' + (data.message || 'Invalid username or password');
           errEl.classList.add('s');
         }
       } catch (err) {
         console.error('[LOGIN ERROR]', err);
-        errEl.textContent = '❌ Connection failed: ' + err.message;
+        errEl.innerHTML = noIcon + ' Connection failed: ' + err.message;
         errEl.classList.add('s');
       } finally {
         isSubmittingLogin = false;
@@ -4586,7 +4684,7 @@
       const blockMsg = isBlocklistedCode(code);
       if (blockMsg) {
         errCard.classList.add('s');
-        document.getElementById('errTitle').textContent = blockMsg.title;
+        document.getElementById('errTitleText').textContent = blockMsg.title.trim();
         document.getElementById('errBody').innerHTML = blockMsg.body;
         document.getElementById('errTags').innerHTML = `<span class="err-tag">${blockMsg.type} detected</span>`;
         showToast(`Lookup failed: ${blockMsg.type} not allowed.`, true);
@@ -4606,7 +4704,7 @@
         if (closeMatches.length > 0) {
           showToast("⚠️ Chip not found. Tap suggestion for close matches!");
           const sugBox = document.getElementById('SGB');
-          sugBox.innerHTML = '<div style="font-size:9px;color:var(--g2);font-family:monospace;padding:8px 12px;border-bottom:1px solid var(--bd)">🔍 DID YOU MEAN ONE OF THESE?</div>';
+          sugBox.innerHTML = '<div style="font-size:9px;color:var(--g2);font-family:monospace;padding:8px 12px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:5px;"><svg class="svg-ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> DID YOU MEAN ONE OF THESE?</div>';
           closeMatches.forEach(item => {
             const row = document.createElement('div');
             row.className = 'sug-item';
@@ -4696,13 +4794,13 @@
         // Render from server scan result
         const cBadge = document.getElementById('resStatusBadge');
         if (resultObj.matched) {
-          cBadge.textContent = resultObj.status === 'coded' ? '🔐 Coded' : '📦 Non-Coded';
+          cBadge.textContent = resultObj.status === 'coded' ? iconLock + ' Coded' : iconPackage + ' Non-Coded';
           cBadge.style.background = resultObj.status === 'coded' ? 'var(--g5b)' : 'var(--g2b)';
           cBadge.style.color = resultObj.status === 'coded' ? 'var(--g5)' : 'var(--g2)';
           document.getElementById('RGB').textContent = GRADES_INFO[resultObj.grade]?.name || resultObj.grade || '—';
           document.getElementById('RGT').textContent = resultObj.grade || '—';
         } else {
-          cBadge.textContent = '❓ Unknown';
+          cBadge.textContent = 'Unknown';
           cBadge.style.background = 'var(--s2b)';
           cBadge.style.color = 'var(--s2)';
           document.getElementById('RGB').textContent = '—';
@@ -4782,7 +4880,7 @@
 
       // Classification badges
       const cBadge = document.getElementById('resStatusBadge');
-      cBadge.textContent = chip.status === 'coded' ? '🔐 Coded' : '📦 Non-Coded';
+      cBadge.textContent = chip.status === 'coded' ? iconLock + ' Coded' : iconPackage + ' Non-Coded';
       cBadge.style.background = chip.status === 'coded' ? 'var(--g5b)' : 'var(--g2b)';
       cBadge.style.color = chip.status === 'coded' ? 'var(--g5)' : 'var(--g2)';
 
@@ -5182,7 +5280,7 @@
         if (scanHistory.length === 0) {
           container.innerHTML = `
         <div class="empty-state">
-          <div class="empty-ico">🕘</div>
+          <div class="empty-ico" style="display:flex; align-items:center; justify-content:center; margin-bottom:8px;"><svg class="svg-ico" style="width:36px; height:36px; color:var(--t3);" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
           <div class="empty-txt">No scan logs recorded yet.<br>Scans you perform will appear here.</div>
         </div>
       `;
@@ -5202,7 +5300,7 @@
           if (log.grade === 'A3') badgeColor = 'c3 bg3';
           if (log.grade === 'A2') badgeColor = 'c2 bg2';
 
-          const sLabel = log.status === 'coded' ? '🔐 Coded' : '📦 NC';
+          const sLabel = log.status === 'coded' ? iconLock + ' Coded' : iconPackage + ' NC';
 
           const priceCodedDisplay = log.grade !== 'N/A' ? `₱${log.priceCoded}` : '—';
           card.innerHTML = `
@@ -5273,7 +5371,7 @@
         const accBtn = document.createElement('button');
         accBtn.className = 'acc-btn';
         accBtn.innerHTML = `
-      <span>📦 Reference Category: ${cap}</span>
+      <span><svg class="svg-ico" viewBox="0 0 24 24"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><polygon points="12 22.08 12 12 3 6.92 3 17.16 12 22.08"></polygon><polygon points="12 22.08 12 12 21 6.92 21 17.16 12 22.08"></polygon><polygon points="12 12 3 6.92 12 1.84 21 6.92 12 12"></polygon></svg> Reference Category: ${cap}</span>
       <span class="acc-tag">${count} Entries</span>
     `;
 
@@ -5295,7 +5393,7 @@
             if (chip.grade === 'A3') badgeColor = 'c3 bg3';
             if (chip.grade === 'A2') badgeColor = 'c2 bg2';
 
-            const sLabel = chip.status === 'coded' ? '🔐 Coded' : '📦 Non-Coded';
+            const sLabel = chip.status === 'coded' ? iconLock + ' Coded' : iconPackage + ' Non-Coded';
 
             item.innerHTML = `
           <div class="mitem-code">${chip.code}</div>
@@ -5363,7 +5461,7 @@
       container.innerHTML = '';
 
       if (chips.length === 0) {
-        container.innerHTML = `<div class="empty-state"><div class="empty-ico">🔍</div><div class="empty-txt">No chips match this filter.<br>Try a different search or filter.</div></div>`;
+        container.innerHTML = `<div class="empty-state"><div class="empty-ico" style="display:flex; align-items:center; justify-content:center; margin-bottom:8px;"><svg class="svg-ico" style="width:36px; height:36px; color:var(--t3);" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div><div class="empty-txt">No chips match this filter.<br>Try a different search or filter.</div></div>`;
         return;
       }
 
@@ -5374,7 +5472,7 @@
         if (chip.grade === 'A3') gc = 'c3 bg3';
         if (chip.grade === 'A2') gc = 'c2 bg2';
 
-        const sLabel = chip.status === 'coded' ? '🔐 Coded' : '📦 Non-Coded';
+        const sLabel = chip.status === 'coded' ? iconLock + ' Coded' : iconPackage + ' Non-Coded';
         const sBg = chip.status === 'coded' ? 'background:var(--g5b);color:var(--g5);border:1px solid var(--g5d)' : 'background:var(--g2b);color:var(--g2);border:1px solid var(--g2d)';
         let priceDisplay = '—';
         if (chip.status === 'coded') {
@@ -5427,7 +5525,7 @@
       const msg = document.getElementById('aiMsg');
 
       loader.classList.add('s');
-      msg.innerHTML = `📚 <b>LOADING IMAGE</b>: Preparing reference chart...`;
+      msg.innerHTML = `<svg class="svg-ico" style="margin-right:6px; color:var(--g4);" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> <b>LOADING IMAGE</b>: Preparing reference chart...`;
 
       const reader = new FileReader();
       reader.onload = function (e) {
@@ -5463,7 +5561,7 @@
           ctx.imageSmoothingQuality = 'high';
           ctx.drawImage(img, padding, padding, W, H);
 
-          msg.innerHTML = `🔬 <b>PREPROCESSING</b>: Enhancing image quality for OCR...`;
+          msg.innerHTML = `<svg class="svg-ico" style="margin-right:6px; color:var(--g3);" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg> <b>PREPROCESSING</b>: Enhancing image quality for OCR...`;
 
           const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const d = imgData.data;
@@ -5533,13 +5631,13 @@
 
           // ── STEP 6: TESSERACT WITH OPTIMIZED CONFIG ──────────────────────────
           if (window.Tesseract) {
-            msg.innerHTML = `🤖 <b>OCR SCANNING</b>: Reading codes (may take 15-30s)...`;
+            msg.innerHTML = `<svg class="svg-ico" style="margin-right:6px; color:var(--g5);" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M12 2v9M8 5h8"></path></svg> <b>OCR SCANNING</b>: Reading codes (may take 15-30s)...`;
 
             Tesseract.recognize(canvas, 'eng', {
               logger: m => {
                 if (m.status === 'recognizing text') {
                   const pct = Math.round((m.progress || 0) * 100);
-                  msg.innerHTML = `🤖 <b>OCR PROGRESS</b>: ${pct}% — extracting codes...`;
+                  msg.innerHTML = `<svg class="svg-ico" style="margin-right:6px; color:var(--g5);" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M12 2v9M8 5h8"></path></svg> <b>OCR PROGRESS</b>: ${pct}% — extracting codes...`;
                 }
               },
               // Only accept characters that appear in real chip codes
@@ -5718,7 +5816,7 @@
 
 
       if (extracted.length === 0) {
-        itemsList.innerHTML = `<div class="empty-state" style="padding:20px"><div class="empty-ico">🔍</div><div class="empty-txt">No chip codes detected in image.<br>Try a clearer photo with better lighting.</div></div>`;
+        itemsList.innerHTML = `<div class="empty-state" style="padding:20px"><div class="empty-ico" style="display:flex; align-items:center; justify-content:center; margin-bottom:8px;"><svg class="svg-ico" style="width:36px; height:36px; color:var(--t3);" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div><div class="empty-txt">No chip codes detected in image.<br>Try a clearer photo with better lighting.</div></div>`;
         showToast('No chip codes found in image. Try a clearer photo.', true);
         return;
       }
@@ -5763,8 +5861,8 @@
           <option ${item.size === '1TB' ? 'selected' : ''}>1TB</option>
         </select>
         <select id="${selectId}" class="ms" style="padding:4px 6px;font-size:9px;border-radius:5px">
-          <option value="coded" ${item.status === 'coded' ? 'selected' : ''}>🔐 Coded</option>
-          <option value="noncode" ${item.status === 'noncode' ? 'selected' : ''}>📦 Non-Coded</option>
+          <option value="coded" ${item.status === 'coded' ? 'selected' : ''}>Coded</option>
+          <option value="noncode" ${item.status === 'noncode' ? 'selected' : ''}>Non-Coded</option>
         </select>
       </div>
       <div style="padding-left:24px;font-size:8px;color:var(--t3);font-family:monospace">${item.type} &bull; ${item.size}</div>
@@ -5996,7 +6094,7 @@
         if (item.grade === 'A3') badgeColor = 'c3 bg3';
         if (item.grade === 'A2') badgeColor = 'c2 bg2';
 
-        const sLabel = item.status === 'coded' ? '🔐 Coded' : '📦 Non-Coded';
+        const sLabel = item.status === 'coded' ? iconLock + ' Coded' : iconPackage + ' Non-Coded';
 
         let customBadgesHtml = '';
         if (item.alias) {
@@ -6017,7 +6115,7 @@
         </div>
       </div>
       <span class="mitem-gr ${badgeColor}">${gInfo.name}</span>
-      <button class="mitem-del" onclick="deleteManualChip('${item.code}')">🗑️</button>
+      <button class="mitem-del" onclick="deleteManualChip('${item.code}')" style="display:inline-flex; align-items:center; justify-content:center;"><svg class="svg-ico" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
     `;
         container.appendChild(row);
       });
@@ -6233,7 +6331,7 @@
           <div class="user-meta">Password: ${u.password}</div>
         </div>
         <span class="user-role ${roleClass}">${u.role.toUpperCase()}</span>
-        ${canDelete ? `<button class="user-del" onclick="deleteUserAccount('${u.username}')">🗑️</button>` : ''}
+        ${canDelete ? `<button class="user-del" onclick="deleteUserAccount('${u.username}')" style="display:inline-flex; align-items:center; justify-content:center;"><svg class="svg-ico" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>` : ''}
       `;
           userContainer.appendChild(row);
         });
@@ -6250,7 +6348,7 @@
         } else {
           logs.forEach(log => {
             const badgeColor = log.grade === 'A5' ? 'c5' : log.grade === 'A4' ? 'c4' : log.grade === 'A3' ? 'c3' : log.grade === 'A2' ? 'c2' : 'c1';
-            const sLabel = log.status === 'coded' ? '🔐 Coded' : '📦 NC';
+            const sLabel = log.status === 'coded' ? iconLock + ' Coded' : iconPackage + ' NC';
 
             const row = document.createElement('div');
             row.className = 'ah-item';
@@ -6332,7 +6430,7 @@
     }
 
     async function clearGlobalScans() {
-      if (confirm("🚨 DANGER: Are you sure you want to reset all log scan history across ALL users? This cannot be undone!")) {
+      if (confirm("DANGER: Are you sure you want to reset all log scan history across ALL users? This cannot be undone!")) {
         try {
           const res = await fetch('/api/history/clear/', {
             method: 'POST',
@@ -6383,7 +6481,19 @@
     // ═══ TOAST & UTILITIES ═══
     function showToast(message, isError = false) {
       const toast = document.getElementById('systemToast');
-      toast.textContent = message;
+      let cleanMsg = message;
+      let iconHtml = '';
+      if (message.startsWith('✓')) {
+        cleanMsg = message.substring(1).trim();
+        iconHtml = '<svg class="svg-ico" style="color:var(--g5)" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+      } else if (message.startsWith('❌')) {
+        cleanMsg = message.substring(1).trim();
+        iconHtml = '<svg class="svg-ico" style="color:var(--er)" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+      } else if (message.startsWith('⚠️')) {
+        cleanMsg = message.substring(2).trim();
+        iconHtml = '<svg class="svg-ico" style="color:var(--g2)" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+      }
+      toast.innerHTML = iconHtml + '<span>' + cleanMsg + '</span>';
 
       if (isError) {
         toast.classList.add('err');
@@ -6654,7 +6764,7 @@
         document.getElementById('spTextResult').style.display = 'block';
         document.getElementById('spTextCode').textContent = textCode && textCode !== 'Unknown' ? textCode : '(unreadable)';
         const ts = document.getElementById('spTextStatus');
-        ts.textContent = textFound ? '✅ Text Match Found' : '❌ Text Match Not Found';
+        ts.innerHTML = textFound ? okIcon + ' Text Match Found' : noIcon + ' Text Match Not Found';
         ts.style.color = textFound ? 'var(--g5)' : 'var(--g1)';
 
         // Step 2 — Picture
@@ -6663,9 +6773,7 @@
           document.getElementById('spImgSpin').style.display = 'none';
           document.getElementById('spImgResult').style.display = 'block';
           const is = document.getElementById('spImgStatus');
-          is.textContent = imageFound
-            ? `✅ Image Match Found${imageCode ? ' — ' + imageCode : ''}`
-            : '❌ Image Match Not Found';
+          is.innerHTML = imageFound ? okIcon + ` Image Match Found${imageCode ? ' — ' + imageCode : ''}` : noIcon + ' Image Match Not Found';
           is.style.color = imageFound ? 'var(--g5)' : 'var(--g1)';
 
           // Final RESULT
@@ -6683,12 +6791,12 @@
                   <div>Grade: <b>${gName} (${g})</b></div>
                   <div>Storage: <b>${chip.size || '—'}</b></div>
                   <div>Type: <b>${chip.type || '—'}</b></div>
-                  <div>Classification: <b>${(chip.status || '') === 'coded' ? '🔐 Coded' : '📦 Non-Coded'}</b></div>
+                  <div>Classification: <b>${(chip.status || '') === 'coded' ? iconLock + ' Coded' : iconPackage + ' Non-Coded'}</b></div>
                 </div>`;
             } else {
               body.innerHTML = `
                 <div style="color:var(--g2); line-height:1.7">
-                  ⚠️ Code not found in database by text or image.<br>
+                  <svg class="svg-ico" style="color:var(--g2); margin-right:4px;" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Code not found in database by text or image.<br>
                   Add it manually below so future scans recognize it.
                 </div>`;
             }
@@ -6758,7 +6866,7 @@
         margin-bottom: 10px;
         font-size: 16px;
       `;
-      title.textContent = '📷 ACTUAL CAMERA';
+      title.innerHTML = '<svg class="svg-ico" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg> ACTUAL CAMERA';
 
       // Video element for camera stream
       const video = document.createElement('video');
@@ -6793,7 +6901,7 @@
 
       // Capture button
       const captureBtn = document.createElement('button');
-      captureBtn.textContent = '📸 CAPTURE';
+      captureBtn.innerHTML = '<svg class="svg-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M6.343 17.657A8 8 0 1 1 17.657 6.343 8 8 0 0 1 6.343 17.657z"></path><path d="M12 2v2M12 20v2M2 12h2M20 12h2"></path></svg> CAPTURE';
       captureBtn.style.cssText = `
         flex: 1;
         padding: 16px;
@@ -6811,7 +6919,7 @@
 
       // Cancel button
       const cancelBtn = document.createElement('button');
-      cancelBtn.textContent = '❌ CANCEL';
+      cancelBtn.innerHTML = noIcon + ' CANCEL';
       cancelBtn.style.cssText = `
         flex: 1;
         padding: 16px;
@@ -7081,9 +7189,7 @@
         document.getElementById('slImgSpin').style.display = 'none';
         document.getElementById('slImgDetail').classList.add('show');
         const is = document.getElementById('slImgStatus');
-        is.innerHTML = imageFound
-          ? 'Image Match <span class="sl-ok">✅ Found</span>' + (imageCode ? ' — ' + imageCode : '')
-          : 'Image Match <span class="sl-no">❌ Not Found</span>';
+        is.innerHTML = imageFound ? 'Image Match ' + okIcon + ' <span class="sl-ok">Found</span>' + (imageCode ? ' — ' + imageCode : '') : 'Image Match ' + noIcon + ' <span class="sl-no">Not Found</span>';
           
       } else if (event === 'text_match') {
         const textFound = !!data.text_found;
@@ -7093,14 +7199,14 @@
         document.getElementById('slTextDetail').classList.add('show');
         document.getElementById('slTextCode').textContent = (textCode && textCode !== 'Unknown') ? textCode : '(unreadable)';
         const ts = document.getElementById('slTextStatus');
-        ts.innerHTML = textFound ? 'Text Match <span class="sl-ok">✅ Found</span>' : 'Text Match <span class="sl-no">❌ Not Found</span>';
+        ts.innerHTML = textFound ? 'Text Match ' + okIcon + ' <span class="sl-ok">Found</span>' : 'Text Match ' + noIcon + ' <span class="sl-no">Not Found</span>';
         
         // As text match completes, show image spinner if visual search is still active
         if (document.getElementById('slImgSpin').style.display !== 'none' && !document.getElementById('slImgDetail').classList.contains('show')) {
           document.getElementById('slImgSpin').style.display = 'inline-block';
         }
       } else if (event === 'ai_started') {
-        document.getElementById('slTextHdr').textContent = '🔍 Consulting AI Vision…';
+        document.getElementById('slTextHdrText').textContent = 'Consulting AI Vision…';
         document.getElementById('slTextSpin').style.display = 'inline-block';
       } else if (event === 'final_result') {
         const finalFound = !!data.found;
@@ -7125,9 +7231,7 @@
         document.getElementById('spImgSpin').style.display = 'none';
         document.getElementById('spImgResult').style.display = 'block';
         const is = document.getElementById('spImgStatus');
-        is.textContent = imageFound
-          ? `✅ Image Match Found${imageCode ? ' — ' + imageCode : ''}`
-          : '❌ Image Match Not Found';
+        is.innerHTML = imageFound ? okIcon + ` Image Match Found${imageCode ? ' — ' + imageCode : ''}` : noIcon + ' Image Match Not Found';
         is.style.color = imageFound ? 'var(--g5)' : 'var(--g1)';
         
       } else if (event === 'text_match') {
@@ -7138,7 +7242,7 @@
         document.getElementById('spTextResult').style.display = 'block';
         document.getElementById('spTextCode').textContent = textCode && textCode !== 'Unknown' ? textCode : '(unreadable)';
         const ts = document.getElementById('spTextStatus');
-        ts.textContent = textFound ? '✅ Text Match Found' : '❌ Text Match Not Found';
+        ts.innerHTML = textFound ? okIcon + ' Text Match Found' : noIcon + ' Text Match Not Found';
         ts.style.color = textFound ? 'var(--g5)' : 'var(--g1)';
         
         // Show image spinner if still running
@@ -7146,7 +7250,7 @@
           document.getElementById('spImgSpin').style.display = 'inline-block';
         }
       } else if (event === 'ai_started') {
-        document.getElementById('spTextTitle').textContent = '🔤 Consulting AI Vision…';
+        document.getElementById('spTextTitleText').textContent = 'Consulting AI Vision…';
         document.getElementById('spTextSpin').style.display = 'inline-block';
       } else if (event === 'final_result') {
         const finalFound = !!data.found;
@@ -7165,14 +7269,14 @@
               <div>Grade: <b>${gName} (${g})</b></div>
               <div>Storage: <b>${chip.size || '—'}</b></div>
               <div>Type: <b>${chip.type || '—'}</b></div>
-              <div>Classification: <b>${(chip.status || '') === 'coded' ? '🔐 Coded' : '📦 Non-Coded'}</b></div>
+              <div>Classification: <b>${(chip.status || '') === 'coded' ? iconLock + ' Coded' : iconPackage + ' Non-Coded'}</b></div>
             </div>`;
         } else {
           let suggestionsHtml = '';
           if (data.fuzzy_matches && data.fuzzy_matches.length > 0) {
             suggestionsHtml = `
               <div style="margin-top:10px; border-top:1px dashed var(--bd); padding-top:8px">
-                <div style="font-size:9px; color:var(--g2); font-family:monospace; margin-bottom:5px; text-align:left">🔍 CLOSE MATCHES IN DATABASE:</div>
+                <div style="font-size:9px; color:var(--g2); font-family:monospace; margin-bottom:5px; text-align:left; display:flex; align-items:center; gap:4px;"><svg class="svg-ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> CLOSE MATCHES IN DATABASE:</div>
                 <div style="display:flex; flex-direction:column; gap:5px">
                   ${data.fuzzy_matches.map(chip => `
                     <div class="sug-item" style="display:flex; justify-content:space-between; align-items:center; background:var(--s1); border:1px solid var(--bd); padding:5px 8px; border-radius:6px; cursor:pointer; text-align:left" onclick="selectFuzzyCropMatch('${chip.code}')">
@@ -7185,7 +7289,7 @@
           }
           body.innerHTML = `
             <div style="color:var(--g2); line-height:1.7">
-              ⚠️ Code not found in database by text or image.<br>
+              <svg class="svg-ico" style="color:var(--g2); margin-right:4px;" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Code not found in database by text or image.<br>
               Add it manually below so future scans recognize it.
               ${suggestionsHtml}
             </div>`;
@@ -7276,8 +7380,8 @@
       document.getElementById('slDivider').style.display = 'none';
       document.getElementById('slResult').classList.remove('show');
       document.getElementById('slManual').classList.remove('show');
-      document.getElementById('slTextHdr').textContent = '🔍 Scanning Text…';
-      document.getElementById('slImgHdr').textContent = '📷 Scanning Picture…';
+      document.getElementById('slTextHdrText').textContent = 'Scanning Text…';
+      document.getElementById('slImgHdrText').textContent = 'Scanning Picture…';
       ov.classList.add('s');
     }
 
@@ -7299,11 +7403,11 @@
       // Step 1 — Text result
       setTimeout(() => {
         document.getElementById('slTextSpin').style.display = 'none';
-        document.getElementById('slTextHdr').textContent = '🔍 Scanned Text';
+        document.getElementById('slTextHdrText').textContent = 'Scanned Text';
         document.getElementById('slTextDetail').classList.add('show');
         document.getElementById('slTextCode').textContent = (textCode && textCode !== 'Unknown') ? textCode : '(unreadable)';
         const ts = document.getElementById('slTextStatus');
-        ts.innerHTML = textFound ? 'Text Match <span class="sl-ok">✅ Found</span>' : 'Text Match <span class="sl-no">❌ Not Found</span>';
+        ts.innerHTML = textFound ? 'Text Match ' + okIcon + ' <span class="sl-ok">Found</span>' : 'Text Match ' + noIcon + ' <span class="sl-no">Not Found</span>';
 
         // Step 2 — Picture
         const imgStep = document.getElementById('slStepImg');
@@ -7311,12 +7415,10 @@
         document.getElementById('slImgSpin').style.display = 'inline-block';
         setTimeout(() => {
           document.getElementById('slImgSpin').style.display = 'none';
-          document.getElementById('slImgHdr').textContent = '📷 Scanned Picture';
+          document.getElementById('slImgHdrText').textContent = 'Scanned Picture';
           document.getElementById('slImgDetail').classList.add('show');
           const is = document.getElementById('slImgStatus');
-          is.innerHTML = imageFound
-            ? 'Image Match <span class="sl-ok">✅ Found</span>' + (data.image_code ? ' — ' + data.image_code : '')
-            : 'Image Match <span class="sl-no">❌ Not Found</span>';
+          is.innerHTML = imageFound ? 'Image Match ' + okIcon + ' <span class="sl-ok">Found</span>' + (data.image_code ? ' — ' + data.image_code : '') : 'Image Match ' + noIcon + ' <span class="sl-no">Not Found</span>';
 
           // Final RESULT
           setTimeout(() => {
@@ -7337,10 +7439,8 @@
       const code = chip.code || data.code || data.text_code || '';
       const g = chip.grade || '—';
       const gName = (GRADES_INFO[g] || { name: g }).name;
-      const photo = chip.image_url
-        ? `<img class="sl-res-photo" src="${chip.image_url}" alt="chip">`
-        : `<div class="sl-res-photo ph">🔌</div>`;
-      const cls = (chip.status === 'coded') ? '🔐 Coded' : '📦 Non-Coded';
+      const photo = chip.image_url ? `<img class="sl-res-photo" src="${chip.image_url}" alt="chip">` : `<div class="sl-res-photo ph" style="display:flex; align-items:center; justify-content:center; background:var(--s2); border:1px solid var(--bd); border-radius:8px;"><svg class="svg-ico" style="width:24px; height:24px; color:var(--t3)" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div>`;
+      const cls = (chip.status === 'coded') ? iconLock + ' Coded' : iconPackage + ' Non-Coded';
       document.getElementById('slManual').classList.remove('show');
       document.getElementById('slResultBody').innerHTML = `
         <div class="sl-res-card">
@@ -7363,7 +7463,7 @@
       if (data && data.fuzzy_matches && data.fuzzy_matches.length > 0) {
         suggestionsHtml = `
           <div style="margin-top:12px; border-top:1px dashed var(--bd); padding-top:10px; text-align:left">
-            <div style="font-size:9px; color:var(--g2); font-family:monospace; margin-bottom:6px">🔍 CLOSE MATCHES IN DATABASE:</div>
+            <div style="font-size:9px; color:var(--g2); font-family:monospace; margin-bottom:6px; display:flex; align-items:center; gap:4px;"><svg class="svg-ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> CLOSE MATCHES IN DATABASE:</div>
             <div style="display:flex; flex-direction:column; gap:6px">
               ${data.fuzzy_matches.map(chip => `
                 <div class="sug-item" style="display:flex; justify-content:space-between; align-items:center; background:var(--s1); border:1px solid var(--bd); padding:6px 10px; border-radius:8px; cursor:pointer" onclick="selectFuzzyScanMatch('${chip.code}')">
@@ -7378,7 +7478,7 @@
 
       document.getElementById('slResultBody').innerHTML = `
         <div class="sl-not-found">
-          <div class="big">🚫</div>
+          <div class="big" style="color:var(--er); display:flex; align-items:center; justify-content:center; margin-bottom:8px;"><svg class="svg-ico huge" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg></div>
           <div style="color:var(--g2); margin-top:4px; line-height:1.6">
             Not found by text or image.<br>Type the code manually or select a match.
           </div>
@@ -7518,7 +7618,7 @@
                     const errCard = document.getElementById('errCard');
                     if (errCard) {
                       errCard.classList.add('s');
-                      document.getElementById('errTitle').textContent = blockMsg.title;
+                      document.getElementById('errTitleText').textContent = blockMsg.title.trim();
                       document.getElementById('errBody').innerHTML = blockMsg.body;
                       document.getElementById('errTags').innerHTML = `<span class="err-tag">${blockMsg.type} detected</span>`;
                       errCard.scrollIntoView({ behavior: 'smooth' });
@@ -7713,8 +7813,8 @@
             <div>
               <span style="font-size: 9px; color: var(--g3)">CLASSIFICATION</span>
               <select id="app-status-${req.id}" class="ms" style="width:100%; font-size: 11px; padding: 4px;">
-                <option value="coded">🔐 Coded</option>
-                <option value="noncode">📦 Non-Coded</option>
+                <option value="coded">Coded</option>
+                <option value="noncode">Non-Coded</option>
               </select>
             </div>
           </div>
@@ -7725,8 +7825,8 @@
           </div>
 
           <div style="display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end;">
-            <button class="abtn go" style="padding: 4px 12px; font-size: 11px; margin: 0; color: var(--er); border-color: var(--er)" onclick="handleApprovalAction(${req.id}, 'reject')">❌ Reject</button>
-            <button class="abtn gn" style="padding: 4px 12px; font-size: 11px; margin: 0;" onclick="handleApprovalAction(${req.id}, 'approve')">✅ Approve</button>
+            <button class="abtn go" style="padding: 4px 12px; font-size: 11px; margin: 0; color: var(--er); border-color: var(--er); display:inline-flex; align-items:center; gap:4px;" onclick="handleApprovalAction(${req.id}, 'reject')"><svg class="svg-ico" style="color:var(--er)" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Reject</button>
+            <button class="abtn gn" style="padding: 4px 12px; font-size: 11px; margin: 0; display:inline-flex; align-items:center; gap:4px;" onclick="handleApprovalAction(${req.id}, 'approve')"><svg class="svg-ico" style="color:var(--g5)" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> Approve</button>
           </div>
         `;
         container.appendChild(card);
