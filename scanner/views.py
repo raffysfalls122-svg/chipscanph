@@ -1084,37 +1084,6 @@ def run_ocr_matching_task(img, all_chips=None):
     return "\n".join(ocr_results)
 
 
-def run_image_matching_task(img, all_chips):
-    """Compare the perceptual hash of the scanned image against stored reference hashes.
-    Returns (scan_hash, best_matched_chip, best_distance).
-    Threshold: hamming distance <= 30 is a match candidate; <= 10 is a confident match."""
-    try:
-        scan_hash = compute_image_hash(img)
-        if not scan_hash:
-            return None, None, None
-
-        best_chip = None
-        best_dist = 999
-        MATCH_THRESHOLD = 30  # Maximum hamming distance to consider as a match
-
-        for chip in all_chips:
-            if not chip.image_hash:
-                continue
-            if len(chip.image_hash) != len(scan_hash):
-                continue
-            dist = hamming_hex(scan_hash, chip.image_hash)
-            if dist < best_dist:
-                best_dist = dist
-                best_chip = chip
-
-        if best_chip is not None and best_dist <= MATCH_THRESHOLD:
-            return scan_hash, best_chip, best_dist
-        return scan_hash, None, best_dist if best_dist < 999 else None
-    except Exception as e:
-        print(f'[IMAGE MATCH TASK ERROR] {e}')
-        return None, None, None
-
-
 # AI vision completely disabled from scanner system.
 
 
@@ -1384,7 +1353,6 @@ def api_scan_image(request):
                 else:
                     # Parallel threads for OCR and Image Hash Matching
                     image_file.seek(0)
-                    image_bytes = image_file.read()
 
                     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
                         future_hash = executor.submit(run_image_matching_task, img, all_chips)
@@ -1434,6 +1402,7 @@ def api_scan_image(request):
                                 ocr_text_to_save = ""
 
                             norm_combined_ocr = normalize_code(ocr_text_to_save)
+                            norm_confused_ocr = normalize_ocr_confusions(ocr_text_to_save)
 
                             # Direct DB match in raw OCR text first
                             for chip in all_chips:
@@ -1459,6 +1428,21 @@ def api_scan_image(request):
                                             break
                                     if found_alt:
                                         break
+
+                            # Second pass: retry with OCR-confusion normalization (O→0, I→1, B→8...)
+                            if not matched_chip and norm_confused_ocr:
+                                for chip in all_chips:
+                                    norm_db = normalize_ocr_confusions(chip.code)
+                                    if len(norm_db) >= 5 and norm_db in norm_confused_ocr:
+                                        matched_chip = chip
+                                        match_method = 'ocr_confusion_normalized'
+                                        break
+                                    if chip.alias:
+                                        norm_alias = normalize_ocr_confusions(chip.alias)
+                                        if len(norm_alias) >= 5 and norm_alias in norm_confused_ocr:
+                                            matched_chip = chip
+                                            match_method = 'ocr_confusion_alias'
+                                            break
 
                             # If no direct match, score candidates
                             if not matched_chip:
