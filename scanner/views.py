@@ -1084,11 +1084,42 @@ def run_ocr_matching_task(img, all_chips=None):
     return "\n".join(ocr_results)
 
 
+def run_image_matching_task(img, all_chips):
+    """Compare the perceptual hash of the scanned image against stored reference hashes.
+    Returns (scan_hash, best_matched_chip, best_distance).
+    Threshold: hamming distance <= 30 is a match candidate; <= 10 is a confident match."""
+    try:
+        scan_hash = compute_image_hash(img)
+        if not scan_hash:
+            return None, None, None
+
+        best_chip = None
+        best_dist = 999
+        MATCH_THRESHOLD = 30  # Maximum hamming distance to consider as a match
+
+        for chip in all_chips:
+            if not chip.image_hash:
+                continue
+            if len(chip.image_hash) != len(scan_hash):
+                continue
+            dist = hamming_hex(scan_hash, chip.image_hash)
+            if dist < best_dist:
+                best_dist = dist
+                best_chip = chip
+
+        if best_chip is not None and best_dist <= MATCH_THRESHOLD:
+            return scan_hash, best_chip, best_dist
+        return scan_hash, None, best_dist if best_dist < 999 else None
+    except Exception as e:
+        print(f'[IMAGE MATCH TASK ERROR] {e}')
+        return None, None, None
+
+
 # AI vision completely disabled from scanner system.
 
 
 # ==================================================================
-# 🖼️ PRIMARY SCAN ENDPOINT - Optimized for Mobile & Desktop
+# PRIMARY SCAN ENDPOINT - Optimized for Mobile & Desktop
 # ==================================================================
 @csrf_exempt
 def api_scan_image(request):
@@ -1285,6 +1316,7 @@ def api_scan_image(request):
                 image_distance = None
                 text_found = False
                 image_found = False
+                text_matched_chip = None  # Always initialize to prevent NameError
                 ai_status = 'disabled'
                 ai_message = 'AI vision completely disabled.'
                 ai_result = {
@@ -1358,9 +1390,9 @@ def api_scan_image(request):
                         future_hash = executor.submit(run_image_matching_task, img, all_chips)
                         future_ocr = executor.submit(run_ocr_matching_task, img, all_chips)
 
-                        # Wait for fast image hash matching (instant)
+                        # Wait for image hash matching (allow up to 8s)
                         try:
-                            scan_hash, image_matched_chip, image_distance = future_hash.result(timeout=0.2)
+                            scan_hash, image_matched_chip, image_distance = future_hash.result(timeout=8.0)
                         except Exception as e:
                             print("[IMAGE MATCH EXCEPTION]", e)
                             scan_hash, image_matched_chip, image_distance = None, None, None
@@ -1553,7 +1585,7 @@ def api_scan_image(request):
                                 match_method = 'visual_hash'
                                 best_candidate = matched_chip.code
 
-                            text_matched_chip = matched_chip if match_method != 'visual_hash' else None
+                            text_matched_chip = matched_chip if match_method not in ('visual_hash', None) else None
                             text_found = text_matched_chip is not None
 
                             yield json.dumps({
